@@ -20,9 +20,7 @@ const MovieDetail: React.FC = () => {
   const movie = useSelector(selectSelectedMovie);
   const status = useSelector(selectMovieStatus);
   const error = useSelector(selectMovieError);
-  const isFavorite = useSelector((state) =>
-    movieId ? selectIsFavorite(state, movieId) : false
-  );
+  const isFavorite = useSelector(state => (movieId ? selectIsFavorite(state, movieId) : false));
 
   useEffect(() => {
     if (movieId) {

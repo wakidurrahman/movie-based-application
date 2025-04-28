@@ -65,9 +65,7 @@ export const fetchMovieById = createAsyncThunk(
     const state = getState() as RootState;
 
     // First, check if we already have the movie in our state
-    const existingMovie = state.movies.list.find(
-      (movie) => movie.imdbID === movieId
-    );
+    const existingMovie = state.movies.list.find((movie: Movie) => movie.imdbID === movieId);
     if (existingMovie) {
       return existingMovie;
     }
@@ -76,7 +74,7 @@ export const fetchMovieById = createAsyncThunk(
     // In a real app, we would make an API call with the ID
     const response = await import('../data/dummy.json');
     const allMovies = response.default as Movie[];
-    const movie = allMovies.find((movie) => movie.imdbID === movieId);
+    const movie = allMovies.find((movie: Movie) => movie.imdbID === movieId);
 
     if (!movie) {
       throw new Error('Movie not found');
@@ -98,18 +96,16 @@ const moviesSlice = createSlice({
       state.list.push(action.payload);
     },
     removeMovie: (state, action: PayloadAction<string>) => {
-      state.list = state.list.filter(
-        (movie) => movie.imdbID !== action.payload
-      );
+      state.list = state.list.filter((movie: Movie) => movie.imdbID !== action.payload);
     },
     setSelectedMovie: (state, action: PayloadAction<Movie | null>) => {
       state.selectedMovie = action.payload;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       // Handle fetchMovies
-      .addCase(fetchMovies.pending, (state) => {
+      .addCase(fetchMovies.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchMovies.fulfilled, (state, action) => {
@@ -121,16 +117,14 @@ const moviesSlice = createSlice({
         state.error = action.error.message || 'Something went wrong';
       })
       // Handle fetchMovieById
-      .addCase(fetchMovieById.pending, (state) => {
+      .addCase(fetchMovieById.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchMovieById.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.selectedMovie = action.payload;
         // Add to list if not already there
-        if (
-          !state.list.some((movie) => movie.imdbID === action.payload.imdbID)
-        ) {
+        if (!state.list.some((movie: Movie) => movie.imdbID === action.payload.imdbID)) {
           state.list.push(action.payload);
         }
       })
@@ -142,16 +136,14 @@ const moviesSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { setMovies, addMovie, removeMovie, setSelectedMovie } =
-  moviesSlice.actions;
+export const { setMovies, addMovie, removeMovie, setSelectedMovie } = moviesSlice.actions;
 
 // Selectors
 export const selectAllMovies = (state: RootState) => state.movies.list;
 export const selectMovieStatus = (state: RootState) => state.movies.status;
 export const selectMovieError = (state: RootState) => state.movies.error;
-export const selectSelectedMovie = (state: RootState) =>
-  state.movies.selectedMovie;
+export const selectSelectedMovie = (state: RootState) => state.movies.selectedMovie;
 export const selectMovieById = (state: RootState, movieId: string) =>
-  state.movies.list.find((movie) => movie.imdbID === movieId);
+  state.movies.list.find((movie: Movie) => movie.imdbID === movieId);
 
 export default moviesSlice.reducer;

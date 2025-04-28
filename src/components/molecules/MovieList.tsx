@@ -9,18 +9,14 @@ interface MovieListProps {
   favoriteIds: string[];
 }
 
-const MovieList: React.FC<MovieListProps> = ({
-  movies,
-  onFavoriteToggle,
-  favoriteIds,
-}) => {
+const MovieList: React.FC<MovieListProps> = ({ movies, onFavoriteToggle, favoriteIds }) => {
   if (!movies.length) {
     return <Empty description="No movies found" />;
   }
 
   return (
     <Row gutter={[16, 16]}>
-      {movies.map((movie) => (
+      {movies.map(movie => (
         <Col key={movie.imdbID} xs={24} sm={12} md={8} lg={6} xl={6}>
           <MovieCard
             movie={movie}

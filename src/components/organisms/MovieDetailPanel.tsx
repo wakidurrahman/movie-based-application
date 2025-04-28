@@ -1,13 +1,5 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Descriptions,
-  Divider,
-  Image,
-  Space,
-  Tag,
-  Typography,
-} from 'antd';
+import { Button, Descriptions, Divider, Image, Space, Tag, Typography } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Movie } from '../../store/moviesSlice';
@@ -66,19 +58,10 @@ const MovieDetailPanel: React.FC<MovieDetailPanelProps> = ({
               <Title level={2} style={{ margin: 0 }}>
                 {movie.Title}
               </Title>
-              <FavoriteIcon
-                isFavorite={isFavorite}
-                onClick={onFavoriteToggle}
-                size={28}
-              />
+              <FavoriteIcon isFavorite={isFavorite} onClick={onFavoriteToggle} size={28} />
             </div>
 
-            <Space
-              direction="horizontal"
-              size={16}
-              wrap
-              style={{ marginBottom: 16 }}
-            >
+            <Space direction="horizontal" size={16} wrap style={{ marginBottom: 16 }}>
               <Text>{movie.Year}</Text>
               <Text>•</Text>
               <Text>{movie.Runtime}</Text>
@@ -89,11 +72,7 @@ const MovieDetailPanel: React.FC<MovieDetailPanelProps> = ({
             {/* Genres */}
             <div style={{ marginBottom: 16 }}>
               {movie.Genre.split(', ').map((genre, index) => (
-                <Tag
-                  key={index}
-                  color="blue"
-                  style={{ marginRight: 8, marginBottom: 8 }}
-                >
+                <Tag key={index} color="blue" style={{ marginRight: 8, marginBottom: 8 }}>
                   {genre}
                 </Tag>
               ))}
@@ -129,25 +108,17 @@ const MovieDetailPanel: React.FC<MovieDetailPanelProps> = ({
           bordered
           column={{ xxl: 4, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }}
         >
-          <Descriptions.Item label="Director">
-            {movie.Director}
-          </Descriptions.Item>
+          <Descriptions.Item label="Director">{movie.Director}</Descriptions.Item>
           <Descriptions.Item label="Writer">{movie.Writer}</Descriptions.Item>
           <Descriptions.Item label="Actors">{movie.Actors}</Descriptions.Item>
-          <Descriptions.Item label="Language">
-            {movie.Language}
-          </Descriptions.Item>
+          <Descriptions.Item label="Language">{movie.Language}</Descriptions.Item>
           <Descriptions.Item label="Country">{movie.Country}</Descriptions.Item>
           <Descriptions.Item label="Awards">{movie.Awards}</Descriptions.Item>
           {movie.BoxOffice !== 'N/A' && (
-            <Descriptions.Item label="Box Office">
-              {movie.BoxOffice}
-            </Descriptions.Item>
+            <Descriptions.Item label="Box Office">{movie.BoxOffice}</Descriptions.Item>
           )}
           {movie.DVD !== 'N/A' && (
-            <Descriptions.Item label="DVD Release">
-              {movie.DVD}
-            </Descriptions.Item>
+            <Descriptions.Item label="DVD Release">{movie.DVD}</Descriptions.Item>
           )}
         </Descriptions>
       </div>

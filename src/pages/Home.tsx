@@ -6,11 +6,7 @@ import SearchBar from '../components/atoms/SearchBar';
 import MovieList from '../components/molecules/MovieList';
 import Base from '../components/template/Base';
 import { selectFavoriteIds, toggleFavorite } from '../store/favoritesSlice';
-import {
-  fetchMovies,
-  selectAllMovies,
-  selectMovieStatus,
-} from '../store/moviesSlice';
+import { fetchMovies, Movie, selectAllMovies, selectMovieStatus } from '../store/moviesSlice';
 import { AppDispatch } from '../store/store';
 
 const { Title } = Typography;
@@ -41,7 +37,7 @@ const Home: React.FC = () => {
       return;
     }
 
-    const filtered = movies.filter((movie) =>
+    const filtered = movies.filter((movie: Movie) =>
       movie.Title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredMovies(filtered);

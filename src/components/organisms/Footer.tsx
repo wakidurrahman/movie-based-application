@@ -14,8 +14,7 @@ const Footer: React.FC = () => {
       }}
     >
       <Text type="secondary">
-        🎬 Movie App ©{new Date().getFullYear()} Created with React, TypeScript
-        & Ant Design
+        🎬 Movie App ©{new Date().getFullYear()} Created with React, TypeScript & Ant Design
       </Text>
     </AntFooter>
   );

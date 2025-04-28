@@ -8,9 +8,7 @@ const { Title } = Typography;
 const Header: React.FC = () => {
   const location = useLocation();
   const selectedKey =
-    location.pathname === '/' || location.pathname === '/movies'
-      ? 'home'
-      : 'detail';
+    location.pathname === '/' || location.pathname === '/movies' ? 'home' : 'detail';
 
   return (
     <AntHeader

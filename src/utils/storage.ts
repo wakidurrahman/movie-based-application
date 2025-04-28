@@ -34,11 +34,8 @@ export const addFavorite = (movieId: string): string[] => {
 
 export const removeFavorite = (movieId: string): string[] => {
   const favorites = getFavorites();
-  const updatedFavorites = favorites.filter((id) => id !== movieId);
-  localStorage.setItem(
-    STORAGE_KEYS.FAVORITES,
-    JSON.stringify(updatedFavorites)
-  );
+  const updatedFavorites = favorites.filter(id => id !== movieId);
+  localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(updatedFavorites));
   return updatedFavorites;
 };
 

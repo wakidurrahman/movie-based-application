@@ -25,14 +25,14 @@ const favoritesSlice = createSlice({
     },
     removeFromFavorites: (state, action: PayloadAction<string>) => {
       const movieId = action.payload;
-      state.ids = state.ids.filter((id) => id !== movieId);
+      state.ids = state.ids.filter(id => id !== movieId);
       // Persist to localStorage
       removeFavorite(movieId);
     },
     toggleFavorite: (state, action: PayloadAction<string>) => {
       const movieId = action.payload;
       if (state.ids.includes(movieId)) {
-        state.ids = state.ids.filter((id) => id !== movieId);
+        state.ids = state.ids.filter(id => id !== movieId);
         removeFavorite(movieId);
       } else {
         state.ids.push(movieId);
@@ -43,8 +43,7 @@ const favoritesSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { addToFavorites, removeFromFavorites, toggleFavorite } =
-  favoritesSlice.actions;
+export const { addToFavorites, removeFromFavorites, toggleFavorite } = favoritesSlice.actions;
 
 // Selectors
 export const selectFavoriteIds = (state: RootState) => state.favorites.ids;

@@ -1,30 +1,39 @@
 # 🎬 Movie App
 
-A responsive, movie-browsing SPA built with React, TypeScript, Vite, and Ant Design.
+A responsive, movie-browsing SPA built with React 19, TypeScript, Vite, and Ant Design.
 
 ## Features
 
 - Browse movie listings with details
 - Search for movies by title
 - View detailed information about each movie
-- Add/remove movies to favorites
+- Add/remove movies to favorites (persisted in localStorage)
 - Responsive design for all devices
+- Error boundary for graceful error handling
+- Comprehensive test coverage
 
 ## Tech Stack
 
-- React 18 + TypeScript
-- Vite as build tool
-- Ant Design for UI components
-- Redux Toolkit for state management
-- React Router for navigation
-- Axios for API requests
-- React Icons for icons
+- **Framework:** React 19 + TypeScript (via Vite)
+- **UI Library:** Ant Design components (Grid, Card, Input, Button, Layout)
+- **HTTP Client:** Axios with request/response interceptors for:
+  - Content-Type: application/json
+  - JWT Auth with token from localStorage
+  - Global error handling
+- **State Management:** Redux Toolkit for centralized state
+  - Movies slice with async thunks for data fetching
+  - Favorites slice synced with localStorage
+- **Routing:** React Router v7 for navigation
+- **Icons:** React-Icons for heart/favorite toggles
+- **Storage:** LocalStorage for favorites persistence
+- **Testing:** Vitest with React Testing Library
+- **Code Quality:** ESLint + Prettier
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v14 or later)
+- Node.js (v22.14.0 or later)
 - npm or yarn
 
 ### Installation
@@ -32,12 +41,10 @@ A responsive, movie-browsing SPA built with React, TypeScript, Vite, and Ant Des
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/movie-app.git
-cd movie-app
+
 
 # Install dependencies
 npm install
-# or
-yarn
 ```
 
 ### Development
@@ -45,24 +52,33 @@ yarn
 ```bash
 # Start the development server
 npm run dev
-# or
-yarn dev
 ```
 
 This will start the development server at `http://localhost:5173`.
 
-### Production Build
+### Scripts
 
 ```bash
 # Build for production
 npm run build
-# or
-yarn build
 
 # Preview the production build
 npm run preview
-# or
-yarn preview
+
+# Run tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Format code
+npm run format
+
+# Lint code
+npm run lint
 ```
 
 ## Project Structure
@@ -72,91 +88,85 @@ The project follows an atomic design pattern:
 ```
 src/
 ├─ api/
-│  └─ axiosInstance.ts
+│  └─ axiosInstance.ts           # Axios with interceptors
 ├─ components/
-│  ├─ atoms/
-│  ├─ molecules/
-│  ├─ organisms/
-│  └─ template/
+│  ├─ atoms/                     # Basic building blocks
+│  │  ├─ SearchBar.tsx           # Debounced search input
+│  │  ├─ RHFInputField.tsx       # Reusable input field
+│  │  ├─ FavoriteIcon.tsx        # Toggleable heart icon
+│  │  └─ LoadingSpinner.tsx      # Loading indicator
+│  ├─ molecules/                 # Combinations of atoms
+│  │  └─ MovieList.tsx           # Grid of movie cards
+│  ├─ organisms/                 # Complex components
+│  │  ├─ Header.tsx              # App header with navigation
+│  │  ├─ Footer.tsx              # App footer
+│  │  ├─ MovieCard.tsx           # Individual movie card
+│  │  └─ MovieDetailPanel.tsx    # Detailed movie view
+│  └─ template/                  # Page layouts
+│     ├─ Base.tsx                # Base page layout template
 ├─ data/
-│  └─ dummy.json
+│  └─ dummy.json                 # Mock movie data (10 objects)
 ├─ pages/
+│  ├─ Home.tsx                   # Main movie listing page
+│  ├─ Favorites.tsx              # User's favorite movies
+│  └─ MovieDetail.tsx            # Individual movie details
 ├─ store/
+│  ├─ moviesSlice.ts             # Redux slice for movies
+│  ├─ favoritesSlice.ts          # Redux slice for favorites
+│  └─ store.ts                   # Redux store configuration
 ├─ utils/
-└─ App.tsx
+│  └─ storage.ts                 # LocalStorage utilities
+├─ test/
+│  └─ setup.ts                   # Vitest setup and mocks
+├─ App.tsx                       # Main application component
+├─ ErrorBoundary.tsx             # Error handling component
+└─ app.config.ts                 # Environment configuration
 ```
+
+## Application Flow
+
+1. **Data Fetching:** The app fetches movie data from the local `dummy.json` file using Redux Toolkit's `createAsyncThunk`
+2. **Home Page:**
+   - Shows a list of movie cards with essential information
+   - Displays a loading spinner during data fetching
+   - Provides search functionality with debounced filtering
+   - Allows toggling favorites
+3. **Movie Details:**
+   - Accessed by clicking on a movie card
+   - Loads data from Redux or fetches if missing
+   - Shows comprehensive movie information
+   - Includes a back to home button
+   - Maintains favorite toggle functionality
+4. **Favorites Page:**
+   - Displays only user's favorited movies
+   - Provides search within favorites
+   - Shows empty state when no favorites exist
+   - Maintains favorite toggle functionality
+
+## Data Management
+
+- **Redux Store:** Centralized state management
+  - Movies slice stores all movie data
+  - Favorites slice tracks user's favorite movie IDs
+- **Async Operations:** Redux Toolkit's `createAsyncThunk` for data fetching
+- **Persistence:** Favorites synced with localStorage through utility functions
+- **API Communication:** Axios instance with interceptors for authentication and error handling
+
+## Development Tools
+
+- **VS Code Configuration:** Optimized settings for development
+  - Format on save with Prettier
+  - ESLint integration
+  - Debug configurations
+- **Code Quality:**
+  - ESLint with TypeScript and React plugins
+  - Prettier for consistent formatting
+  - TypeScript for type safety
+- **Testing:**
+  - Vitest configuration
+  - React Testing Library for component tests
+  - Mock implementations for external dependencies
 
 ## License
 
 This project is licensed under the MIT License.
-
----
-
-Completed:
-✅ Created project using Vite with React + TypeScript
-✅ Set up the atomic design folder structure
-✅ Added Ant Design components
-✅ Created Axios instance with interceptors
-✅ Set up Redux store with movies and favorites slices
-✅ Implemented localStorage persistence for favorites
-✅ Added dummy.json with 10 movie objects
-✅ Created responsive UI components for all screens
-✅ Implemented search functionality with debounce
-✅ Added favorite toggling functionality
-✅ Set up routing for home and movie detail pages
-✅ Created detailed movie view with all metadata
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
