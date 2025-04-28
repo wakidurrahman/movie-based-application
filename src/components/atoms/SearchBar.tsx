@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;
@@ -8,11 +8,11 @@ interface SearchBarProps {
   delay?: number;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
+const SearchBar = ({
   onSearch,
   placeholder = 'Search for movies...',
   delay = 500,
-}) => {
+}: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Debounce search term

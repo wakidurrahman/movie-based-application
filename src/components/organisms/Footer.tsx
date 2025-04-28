@@ -1,10 +1,9 @@
 import { Layout, Typography } from 'antd';
-import React from 'react';
 
 const { Footer: AntFooter } = Layout;
 const { Text } = Typography;
 
-const Footer: React.FC = () => {
+const Footer = () => {
   return (
     <AntFooter
       style={{
@@ -14,8 +13,7 @@ const Footer: React.FC = () => {
       }}
     >
       <Text type="secondary">
-        🎬 Movie App ©{new Date().getFullYear()} Created with React, TypeScript
-        & Ant Design
+        🎬 Movie App ©{new Date().getFullYear()} Created with React, TypeScript & Ant Design
       </Text>
     </AntFooter>
   );

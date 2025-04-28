@@ -1,5 +1,4 @@
 import { Card, Space, Tag, Typography } from 'antd';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Movie } from '../../store/moviesSlice';
 import FavoriteIcon from '../atoms/FavoriteIcon';
@@ -13,11 +12,7 @@ interface MovieCardProps {
   onFavoriteToggle: () => void;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({
-  movie,
-  isFavorite,
-  onFavoriteToggle,
-}) => {
+const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
   // Default image if poster is not available
   const imageSrc =
     movie.Poster === 'N/A'
@@ -52,11 +47,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
               padding: 5,
             }}
           >
-            <FavoriteIcon
-              isFavorite={isFavorite}
-              onClick={onFavoriteToggle}
-              size={20}
-            />
+            <FavoriteIcon isFavorite={isFavorite} onClick={onFavoriteToggle} size={20} />
           </div>
         </div>
       }
@@ -78,15 +69,11 @@ const MovieCard: React.FC<MovieCardProps> = ({
                     {genre}
                   </Tag>
                 ))}
-                {genres.length > 2 && (
-                  <Tag color="blue">+{genres.length - 2}</Tag>
-                )}
+                {genres.length > 2 && <Tag color="blue">+{genres.length - 2}</Tag>}
               </div>
 
               <div>
-                {movie.imdbRating !== 'N/A' && (
-                  <Tag color="gold">★ {movie.imdbRating}/10</Tag>
-                )}
+                {movie.imdbRating !== 'N/A' && <Tag color="gold">★ {movie.imdbRating}/10</Tag>}
               </div>
             </Space>
           }

@@ -1,6 +1,5 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
-import React from 'react';
 
 interface LoadingSpinnerProps {
   size?: number;
@@ -8,11 +7,11 @@ interface LoadingSpinnerProps {
   fullScreen?: boolean;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+const LoadingSpinner = ({
   size = 40,
   tip = 'Loading...',
   fullScreen = false,
-}) => {
+}: LoadingSpinnerProps) => {
   const antIcon = <LoadingOutlined style={{ fontSize: size }} spin />;
 
   if (fullScreen) {

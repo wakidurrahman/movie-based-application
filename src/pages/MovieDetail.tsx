@@ -1,5 +1,5 @@
 import { Alert } from 'antd';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import LoadingSpinner from '../components/atoms/LoadingSpinner';
@@ -14,15 +14,13 @@ import {
 } from '../store/moviesSlice';
 import { AppDispatch } from '../store/store';
 
-const MovieDetail: React.FC = () => {
+const MovieDetail = () => {
   const { movieId } = useParams<{ movieId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const movie = useSelector(selectSelectedMovie);
   const status = useSelector(selectMovieStatus);
   const error = useSelector(selectMovieError);
-  const isFavorite = useSelector((state) =>
-    movieId ? selectIsFavorite(state, movieId) : false
-  );
+  const isFavorite = useSelector(state => (movieId ? selectIsFavorite(state, movieId) : false));
 
   useEffect(() => {
     if (movieId) {
