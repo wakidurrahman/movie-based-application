@@ -10,7 +10,7 @@ import { AppDispatch } from '../store/store';
 
 const { Title } = Typography;
 
-const Favorites: React.FC = () => {
+const Favorites = () => {
   const dispatch = useDispatch<AppDispatch>();
   const allMovies = useSelector(selectAllMovies);
   const favoriteIds = useSelector(selectFavoriteIds);

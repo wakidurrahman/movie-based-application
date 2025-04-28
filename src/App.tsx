@@ -1,5 +1,4 @@
 import { ConfigProvider } from 'antd';
-import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -9,7 +8,7 @@ import Home from './pages/Home';
 import MovieDetail from './pages/MovieDetail';
 import { store } from './store/store';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <ErrorBoundary>
       <Provider store={store}>

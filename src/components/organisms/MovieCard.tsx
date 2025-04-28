@@ -1,5 +1,4 @@
 import { Card, Space, Tag, Typography } from 'antd';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Movie } from '../../store/moviesSlice';
 import FavoriteIcon from '../atoms/FavoriteIcon';
@@ -13,7 +12,7 @@ interface MovieCardProps {
   onFavoriteToggle: () => void;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite, onFavoriteToggle }) => {
+const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
   // Default image if poster is not available
   const imageSrc =
     movie.Poster === 'N/A'

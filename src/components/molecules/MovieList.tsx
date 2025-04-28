@@ -1,5 +1,4 @@
 import { Col, Empty, Row } from 'antd';
-import React from 'react';
 import { Movie } from '../../store/moviesSlice';
 import MovieCard from '../organisms/MovieCard';
 
@@ -9,7 +8,7 @@ interface MovieListProps {
   favoriteIds: string[];
 }
 
-const MovieList: React.FC<MovieListProps> = ({ movies, onFavoriteToggle, favoriteIds }) => {
+const MovieList = ({ movies, onFavoriteToggle, favoriteIds }: MovieListProps) => {
   if (!movies.length) {
     return <Empty description="No movies found" />;
   }

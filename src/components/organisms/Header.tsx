@@ -1,11 +1,10 @@
 import { Layout, Menu, Typography } from 'antd';
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const { Header: AntHeader } = Layout;
 const { Title } = Typography;
 
-const Header: React.FC = () => {
+const Header = () => {
   const location = useLocation();
   const selectedKey =
     location.pathname === '/' || location.pathname === '/movies' ? 'home' : 'detail';

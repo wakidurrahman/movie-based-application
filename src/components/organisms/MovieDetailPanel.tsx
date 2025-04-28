@@ -1,6 +1,5 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Descriptions, Divider, Image, Space, Tag, Typography } from 'antd';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Movie } from '../../store/moviesSlice';
 import FavoriteIcon from '../atoms/FavoriteIcon';
@@ -13,11 +12,7 @@ interface MovieDetailPanelProps {
   onFavoriteToggle: () => void;
 }
 
-const MovieDetailPanel: React.FC<MovieDetailPanelProps> = ({
-  movie,
-  isFavorite,
-  onFavoriteToggle,
-}) => {
+const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPanelProps) => {
   const imageSrc =
     movie.Poster === 'N/A'
       ? 'https://via.placeholder.com/300x450?text=No+Image+Available'

@@ -1,5 +1,5 @@
 import { Typography } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingSpinner from '../components/atoms/LoadingSpinner';
 import SearchBar from '../components/atoms/SearchBar';
@@ -11,7 +11,7 @@ import { AppDispatch } from '../store/store';
 
 const { Title } = Typography;
 
-const Home: React.FC = () => {
+const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
   const movies = useSelector(selectAllMovies);
   const favoriteIds = useSelector(selectFavoriteIds);

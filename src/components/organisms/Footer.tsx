@@ -1,10 +1,9 @@
 import { Layout, Typography } from 'antd';
-import React from 'react';
 
 const { Footer: AntFooter } = Layout;
 const { Text } = Typography;
 
-const Footer: React.FC = () => {
+const Footer = () => {
   return (
     <AntFooter
       style={{

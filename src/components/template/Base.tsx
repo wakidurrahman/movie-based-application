@@ -1,5 +1,5 @@
 import { Layout } from 'antd';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import Footer from '../organisms/Footer';
 import Header from '../organisms/Header';
 
@@ -9,7 +9,7 @@ interface BaseTemplateProps {
   children: ReactNode;
 }
 
-const Base: React.FC<BaseTemplateProps> = ({ children }) => {
+const Base = ({ children }: BaseTemplateProps) => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header />

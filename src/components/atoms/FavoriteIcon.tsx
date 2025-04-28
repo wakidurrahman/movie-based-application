@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 interface FavoriteIconProps {
@@ -8,12 +7,7 @@ interface FavoriteIconProps {
   color?: string;
 }
 
-const FavoriteIcon: React.FC<FavoriteIconProps> = ({
-  isFavorite,
-  onClick,
-  size = 24,
-  color = '#ff4d4f',
-}) => {
+const FavoriteIcon = ({ isFavorite, onClick, size = 24, color = '#ff4d4f' }: FavoriteIconProps) => {
   return (
     <div
       onClick={onClick}

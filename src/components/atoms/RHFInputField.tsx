@@ -15,7 +15,7 @@ interface RHFInputFieldProps {
   required?: boolean;
 }
 
-const RHFInputField: React.FC<RHFInputFieldProps> = ({
+const RHFInputField = ({
   id,
   name,
   label,
@@ -25,7 +25,7 @@ const RHFInputField: React.FC<RHFInputFieldProps> = ({
   onChange,
   error,
   required = false,
-}) => {
+}: RHFInputFieldProps) => {
   return (
     <div style={{ marginBottom: 16 }}>
       {label && (
