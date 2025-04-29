@@ -1,37 +1,9 @@
-import axios from 'axios';
-import { config, endpoints } from '../app.config';
+import axiosInstance from '../api/axiosInstance';
+import { config, endpoints } from '../config/app.config';
 import { Movie } from '../store/moviesSlice';
 
 // Simple cache implementation to prevent duplicate API calls
 const apiCache = new Map();
-
-// Create axios instance with interceptors
-const axiosInstance = axios.create({
-  baseURL: config.api.baseUrl,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Add request interceptors
-axiosInstance.interceptors.request.use(
-  config => {
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptors
-axiosInstance.interceptors.response.use(
-  response => {
-    return response;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
 
 /**
  * Wrapper for axios calls with caching

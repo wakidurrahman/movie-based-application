@@ -1,7 +1,8 @@
 import { Card, Space, Tag, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { Movie } from '../../store/moviesSlice';
-import FavoriteIcon from '../atoms/FavoriteIcon';
+import { Movie } from '../../../store/moviesSlice';
+import FavoriteIcon from '../../atoms/favorite-icon';
+import './index.scss';
 
 const { Meta } = Card;
 const { Text } = Typography;
@@ -24,29 +25,12 @@ const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
 
   return (
     <Card
+      className="o-movie-card"
       hoverable
       cover={
-        <div style={{ height: 300, overflow: 'hidden', position: 'relative' }}>
-          <img
-            alt={movie.Title || 'Movie poster'}
-            src={imageSrc}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              zIndex: 1,
-              background: 'rgba(255, 255, 255, 0.8)',
-              borderRadius: '50%',
-              padding: 5,
-            }}
-          >
+        <div className="o-movie-card__image-container">
+          <img className="o-movie-card__image" alt={movie.Title || 'Movie poster'} src={imageSrc} />
+          <div className="o-movie-card__favorite-button">
             <FavoriteIcon isFavorite={isFavorite} onClick={onFavoriteToggle} size={20} />
           </div>
         </div>
@@ -57,13 +41,15 @@ const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
           title={movie.Title || 'Unknown Title'}
           description={
             <Space direction="vertical" size={2}>
-              <Space>
+              <div className="o-movie-card__info-row">
                 <Text type="secondary">{movie.Year || 'N/A'}</Text>
-                <Text type="secondary">•</Text>
+                <Text type="secondary" className="o-movie-card__info-separator">
+                  •
+                </Text>
                 <Text type="secondary">{movie.Runtime || 'N/A'}</Text>
-              </Space>
+              </div>
 
-              <div>
+              <div className="o-movie-card__info-tags">
                 {genres.length > 0 ? (
                   <>
                     {genres.slice(0, 2).map((genre, index) => (
@@ -78,7 +64,7 @@ const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
                 )}
               </div>
 
-              <div>
+              <div className="o-movie-card__info-rating">
                 {movie.imdbRating && movie.imdbRating !== 'N/A' ? (
                   <Tag color="gold">★ {movie.imdbRating}/10</Tag>
                 ) : null}

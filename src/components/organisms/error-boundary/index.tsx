@@ -1,5 +1,6 @@
 import { Alert, Button } from 'antd';
 import { Component, ErrorInfo, ReactNode } from 'react';
+import './index.scss';
 
 interface Props {
   children: ReactNode;
@@ -49,18 +50,22 @@ class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div style={{ padding: 24, textAlign: 'center' }}>
+        <div className="o-error-boundary">
           <Alert
             message="Something went wrong"
             description={
               <>
                 <p>{this.state.error?.toString() || 'An unexpected error occurred'}</p>
                 {this.state.errorInfo && (
-                  <details style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>
+                  <details className="o-error-boundary__details">
                     {this.state.errorInfo.componentStack}
                   </details>
                 )}
-                <Button type="primary" onClick={this.handleReset} style={{ marginTop: 16 }}>
+                <Button
+                  type="primary"
+                  onClick={this.handleReset}
+                  className="o-error-boundary__reset-button"
+                >
                   Try again
                 </Button>
               </>

@@ -1,6 +1,7 @@
 import { SearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { ChangeEvent, useEffect, useState } from 'react';
+import './index.scss';
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;
@@ -32,12 +33,12 @@ const SearchBar = ({
 
   return (
     <Input
+      className="a-search-bar"
       placeholder={placeholder}
       prefix={<SearchOutlined />}
       value={searchTerm}
       onChange={handleChange}
       allowClear
-      style={{ maxWidth: 400, width: '100%' }}
     />
   );
 };

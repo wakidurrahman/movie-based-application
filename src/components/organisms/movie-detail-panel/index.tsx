@@ -1,8 +1,9 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Descriptions, Divider, Image, Space, Tag, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { Movie } from '../../store/moviesSlice';
-import FavoriteIcon from '../atoms/FavoriteIcon';
+import { Movie } from '../../../store/moviesSlice';
+import FavoriteIcon from '../../atoms/favorite-icon';
+import './index.scss';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -19,8 +20,8 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
       : movie.Poster;
 
   return (
-    <div>
-      <div style={{ marginBottom: 20 }}>
+    <div className="o-movie-detail-panel">
+      <div className="o-movie-detail-panel__back-button">
         <Link to="/movies">
           <Button type="text" icon={<ArrowLeftOutlined />}>
             Back to Movies
@@ -28,35 +29,33 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
         </Link>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+      <div className="o-movie-detail-panel__container">
+        <div className="o-movie-detail-panel__header">
           {/* Movie poster */}
-          <div style={{ flex: '0 0 300px', marginBottom: 20 }}>
+          <div className="o-movie-detail-panel__poster">
             <Image
+              className="o-movie-detail-panel__poster-image"
               src={imageSrc}
               alt={movie.Title || 'Movie poster'}
-              style={{ maxWidth: '100%', borderRadius: 8 }}
               fallback="https://via.placeholder.com/300x450?text=No+Image+Available"
             />
           </div>
 
           {/* Movie info */}
-          <div style={{ flex: '1 1 500px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 16,
-              }}
-            >
-              <Title level={2} style={{ margin: 0 }}>
+          <div className="o-movie-detail-panel__info">
+            <div className="o-movie-detail-panel__info-header">
+              <Title level={2} className="o-movie-detail-panel__info-title">
                 {movie.Title || 'Unknown Title'}
               </Title>
               <FavoriteIcon isFavorite={isFavorite} onClick={onFavoriteToggle} size={28} />
             </div>
 
-            <Space direction="horizontal" size={16} wrap style={{ marginBottom: 16 }}>
+            <Space
+              direction="horizontal"
+              size={16}
+              wrap
+              className="o-movie-detail-panel__info-meta"
+            >
               <Text>{movie.Year || 'N/A'}</Text>
               <Text>•</Text>
               <Text>{movie.Runtime || 'N/A'}</Text>
@@ -65,7 +64,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
             </Space>
 
             {/* Genres */}
-            <div style={{ marginBottom: 16 }}>
+            <div className="o-movie-detail-panel__info-genres">
               {movie.Genre && typeof movie.Genre === 'string' ? (
                 movie.Genre.split(', ').map((genre, index) => (
                   <Tag key={index} color="blue" style={{ marginRight: 8, marginBottom: 8 }}>
@@ -78,7 +77,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
             </div>
 
             {/* Ratings */}
-            <div style={{ marginBottom: 16 }}>
+            <div className="o-movie-detail-panel__info-ratings">
               {movie.imdbRating && movie.imdbRating !== 'N/A' && (
                 <Tag color="gold" style={{ marginRight: 8, marginBottom: 8 }}>
                   IMDb: {movie.imdbRating}/10
@@ -92,7 +91,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
             </div>
 
             {/* Plot */}
-            <div style={{ marginBottom: 16 }}>
+            <div className="o-movie-detail-panel__info-plot">
               <Title level={4}>Plot</Title>
               <Paragraph>{movie.Plot || 'No plot description available.'}</Paragraph>
             </div>
@@ -103,6 +102,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
 
         {/* Additional details */}
         <Descriptions
+          className="o-movie-detail-panel__details"
           title="Movie Details"
           bordered
           column={{ xxl: 4, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }}

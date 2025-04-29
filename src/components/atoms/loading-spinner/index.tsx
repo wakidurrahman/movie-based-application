@@ -1,5 +1,6 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
+import './index.scss';
 
 interface LoadingSpinnerProps {
   size?: number;
@@ -16,20 +17,7 @@ const LoadingSpinner = ({
 
   if (fullScreen) {
     return (
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: 'rgba(255, 255, 255, 0.7)',
-          zIndex: 9999,
-        }}
-      >
+      <div className="a-loading-spinner--fullscreen">
         <Spin indicator={antIcon} tip={tip} size="large" />
       </div>
     );
@@ -41,9 +29,9 @@ const LoadingSpinner = ({
 
   // Option 1: Create a proper nested pattern by adding content
   return (
-    <div style={{ textAlign: 'center', padding: '30px 50px' }}>
+    <div className="a-loading-spinner">
       <Spin indicator={antIcon} tip={tip}>
-        <div style={{ opacity: 0, height: '50px', padding: '20px' }}>
+        <div className="a-loading-spinner__content">
           {/* Hidden content to create a proper nesting context */}
           Content
         </div>

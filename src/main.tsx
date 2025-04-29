@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css';
+import './index.scss';
 // Import Ant Design styles - correct path for current version
 // import 'antd/dist/antd.css';
 

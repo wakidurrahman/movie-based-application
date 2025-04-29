@@ -2,9 +2,9 @@ import { Alert } from 'antd';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import LoadingSpinner from '../components/atoms/LoadingSpinner';
-import MovieDetailPanel from '../components/organisms/MovieDetailPanel';
-import Base from '../components/template/Base';
+import LoadingSpinner from '../components/atoms/loading-spinner';
+import MovieDetailPanel from '../components/organisms/movie-detail-panel';
+import Base from '../components/template/base';
 import { selectIsFavorite, toggleFavorite } from '../store/favoritesSlice';
 import {
   fetchMovieById,

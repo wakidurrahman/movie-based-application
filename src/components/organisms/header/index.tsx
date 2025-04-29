@@ -1,6 +1,7 @@
 import type { MenuProps } from 'antd';
 import { Layout, Menu, Typography } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
+import './index.scss';
 
 const { Header: AntHeader } = Layout;
 const { Title } = Typography;
@@ -23,34 +24,19 @@ const Header = () => {
   ];
 
   return (
-    <AntHeader
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        width: '100%',
-        backgroundColor: '#fff',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.09)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+    <AntHeader className="o-header">
+      <div className="o-header__container">
+        <div className="o-header__logo-container">
           <Link to="/movies">
-            <Title level={3} style={{ margin: 0, cursor: 'pointer' }}>
-              🎬 Movie App
+            <Title level={1} className="o-header__logo">
+              🎬 Movies
             </Title>
           </Link>
         </div>
         <Menu
           mode="horizontal"
           selectedKeys={[selectedKey]}
-          style={{ border: 'none', width: 'auto' }}
+          className="o-header__menu"
           items={menuItems}
         />
       </div>

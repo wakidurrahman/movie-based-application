@@ -1,5 +1,6 @@
 import { Input, Typography } from 'antd';
 import React from 'react';
+import './index.scss';
 
 const { Text } = Typography;
 
@@ -27,10 +28,10 @@ const RHFInputField = ({
   required = false,
 }: RHFInputFieldProps) => {
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div className="a-rhf-input-field">
       {label && (
-        <label htmlFor={id} style={{ display: 'block', marginBottom: 8 }}>
-          {label} {required && <span style={{ color: '#ff4d4f' }}>*</span>}
+        <label htmlFor={id} className="a-rhf-input-field__label">
+          {label} {required && <span className="a-rhf-input-field__label-required">*</span>}
         </label>
       )}
       <Input
@@ -44,7 +45,7 @@ const RHFInputField = ({
         aria-required={required}
       />
       {error && (
-        <Text type="danger" style={{ fontSize: 12 }}>
+        <Text type="danger" className="a-rhf-input-field__error">
           {error}
         </Text>
       )}

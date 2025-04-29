@@ -1,17 +1,23 @@
 import { message } from 'antd';
 import axios from 'axios';
+import { config } from '../config/app.config';
 import { getToken } from '../utils/storage';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5173';
-
+/**
+ * Creates an Axios instance with predefined configuration.
+ * The instance includes interceptors for handling request and response.
+ */
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: config.api.baseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor
+/**
+ * Request interceptor to add authorization token to headers.
+ * If a token is available, it is added to the Authorization header.
+ */
 axiosInstance.interceptors.request.use(
   config => {
     const token = getToken();
@@ -21,17 +27,19 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   error => {
-    console.warn('Request error:', error);
+    // Handles request errors
     return Promise.reject(error);
   }
 );
 
-// Response interceptor
+/**
+ * Response interceptor to handle errors globally.
+ * Displays an error message using Ant Design's message component.
+ */
 axiosInstance.interceptors.response.use(
   response => response,
   error => {
     const errorMessage = error.response?.data?.message || 'Something went wrong';
-    console.warn('Response error:', error);
     message.error(errorMessage);
     return Promise.reject(error);
   }

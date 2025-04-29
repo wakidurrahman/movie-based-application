@@ -1,9 +1,9 @@
 import { Empty, Typography } from 'antd';
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import SearchBar from '../components/atoms/SearchBar';
-import MovieList from '../components/molecules/MovieList';
-import Base from '../components/template/Base';
+import SearchBar from '../components/atoms/search-bar';
+import MovieList from '../components/molecules/movie-list';
+import Base from '../components/template/base';
 import { selectFavoriteIds, toggleFavorite } from '../store/favoritesSlice';
 import { Movie, selectAllMovies } from '../store/moviesSlice';
 import { AppDispatch } from '../store/store';

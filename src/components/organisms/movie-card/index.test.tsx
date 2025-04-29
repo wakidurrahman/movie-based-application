@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
-import MovieCard from './MovieCard';
+import MovieCard from './index';
 
 // Mock movie data
 const mockMovie = {

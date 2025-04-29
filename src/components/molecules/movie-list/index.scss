@@ -1,0 +1,14 @@
+.m-movie-list {
+  &__empty {
+    padding: 40px 0;
+    text-align: center;
+  }
+
+  &__row {
+    margin-bottom: 16px;
+  }
+
+  &__col {
+    margin-bottom: 16px;
+  }
+}

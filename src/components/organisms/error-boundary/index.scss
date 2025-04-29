@@ -1,0 +1,13 @@
+.o-error-boundary {
+  padding: 24px;
+  text-align: center;
+
+  &__details {
+    white-space: pre-wrap;
+    text-align: left;
+  }
+
+  &__reset-button {
+    margin-top: 16px;
+  }
+}

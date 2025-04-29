@@ -1,8 +1,8 @@
 import { ConfigProvider } from 'antd';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import './App.css';
-import ErrorBoundary from './components/ErrorBoundary';
+import './App.scss';
+import ErrorBoundary from './components/organisms/error-boundary';
 import Favorites from './pages/Favorites';
 import Home from './pages/Home';
 import MovieDetail from './pages/MovieDetail';

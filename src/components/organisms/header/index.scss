@@ -1,0 +1,41 @@
+@import '../../../styles/variables.scss';
+
+.o-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  padding: 0 20px;
+  background-color: $white-color;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+
+  @media (max-width: $breakpoint-medium) {
+    padding: 0 15px;
+  }
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__logo-container {
+    display: flex;
+    align-items: center;
+  }
+
+  &__logo {
+    cursor: pointer;
+  }
+
+  &__menu {
+    border: none;
+    width: auto;
+  }
+
+  h1.o-header__logo {
+    margin: 0;
+    font-size: 24px;
+  }
+}

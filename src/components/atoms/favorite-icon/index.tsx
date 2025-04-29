@@ -1,4 +1,5 @@
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import './index.scss';
 
 interface FavoriteIconProps {
   isFavorite: boolean;
@@ -10,8 +11,8 @@ interface FavoriteIconProps {
 const FavoriteIcon = ({ isFavorite, onClick, size = 24, color = '#ff4d4f' }: FavoriteIconProps) => {
   return (
     <div
+      className="a-favorite-icon"
       onClick={onClick}
-      style={{ cursor: 'pointer', display: 'inline-block' }}
       role="button"
       aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
       tabIndex={0}
