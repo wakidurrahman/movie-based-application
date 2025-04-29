@@ -4,7 +4,7 @@ import './index.scss';
 
 const { Text } = Typography;
 
-interface RHFInputFieldProps {
+interface InputFieldProps {
   id: string;
   name: string;
   label?: string;
@@ -16,7 +16,7 @@ interface RHFInputFieldProps {
   required?: boolean;
 }
 
-const RHFInputField = ({
+const InputField = ({
   id,
   name,
   label,
@@ -26,7 +26,7 @@ const RHFInputField = ({
   onChange,
   error,
   required = false,
-}: RHFInputFieldProps) => {
+}: InputFieldProps) => {
   return (
     <div className="a-rhf-input-field">
       {label && (
@@ -53,4 +53,4 @@ const RHFInputField = ({
   );
 };
 
-export default RHFInputField;
+export default InputField;

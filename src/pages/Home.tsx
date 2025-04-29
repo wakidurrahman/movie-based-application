@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoadingSpinner from '../components/atoms/loading-spinner';
 import SearchBar from '../components/atoms/search-bar';
 import MovieList from '../components/molecules/movie-list';
-import Base from '../components/template/base';
+import Base from '../components/template/base/';
 import { config } from '../config/app.config';
 import { selectFavoriteIds, toggleFavorite } from '../store/favoritesSlice';
 import {
