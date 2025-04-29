@@ -1,0 +1,10 @@
+# This file tells Cursor which files to ignore for AI features
+# Remove files/paths you want to re-enable AI features for
+# Examples:
+# node_modules/
+# dist/
+# *.generated.ts 
+
+# By default, Cursor ignores .env files for security
+# The line below explicitly enables AI features for .env files
+!.env 
