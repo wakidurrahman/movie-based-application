@@ -34,13 +34,13 @@ A responsive, movie-browsing SPA built with React 19, TypeScript, Vite, and Ant 
 ### Prerequisites
 
 - Node.js (v22.14.0 or later)
-- npm or yarn
+- npm
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/movie-app.git
+git clone https://github.com/wakidurrahman/movie-based-application.git
 
 
 # Install dependencies
@@ -85,7 +85,7 @@ npm run lint
 
 The project follows an atomic design pattern:
 
-```
+```bash
 src/
 ├─ api/
 │  └─ axiosInstance.ts           # Axios with interceptors
