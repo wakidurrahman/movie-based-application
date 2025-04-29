@@ -14,7 +14,7 @@ interface MovieDetailPanelProps {
 
 const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPanelProps) => {
   const imageSrc =
-    movie.Poster === 'N/A'
+    !movie.Poster || movie.Poster === 'N/A'
       ? 'https://via.placeholder.com/300x450?text=No+Image+Available'
       : movie.Poster;
 
@@ -34,7 +34,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
           <div style={{ flex: '0 0 300px', marginBottom: 20 }}>
             <Image
               src={imageSrc}
-              alt={movie.Title}
+              alt={movie.Title || 'Movie poster'}
               style={{ maxWidth: '100%', borderRadius: 8 }}
               fallback="https://via.placeholder.com/300x450?text=No+Image+Available"
             />
@@ -51,36 +51,40 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
               }}
             >
               <Title level={2} style={{ margin: 0 }}>
-                {movie.Title}
+                {movie.Title || 'Unknown Title'}
               </Title>
               <FavoriteIcon isFavorite={isFavorite} onClick={onFavoriteToggle} size={28} />
             </div>
 
             <Space direction="horizontal" size={16} wrap style={{ marginBottom: 16 }}>
-              <Text>{movie.Year}</Text>
+              <Text>{movie.Year || 'N/A'}</Text>
               <Text>•</Text>
-              <Text>{movie.Runtime}</Text>
+              <Text>{movie.Runtime || 'N/A'}</Text>
               <Text>•</Text>
-              <Text>{movie.Rated}</Text>
+              <Text>{movie.Rated || 'N/A'}</Text>
             </Space>
 
             {/* Genres */}
             <div style={{ marginBottom: 16 }}>
-              {movie.Genre.split(', ').map((genre, index) => (
-                <Tag key={index} color="blue" style={{ marginRight: 8, marginBottom: 8 }}>
-                  {genre}
-                </Tag>
-              ))}
+              {movie.Genre && typeof movie.Genre === 'string' ? (
+                movie.Genre.split(', ').map((genre, index) => (
+                  <Tag key={index} color="blue" style={{ marginRight: 8, marginBottom: 8 }}>
+                    {genre}
+                  </Tag>
+                ))
+              ) : (
+                <Tag color="blue">Genre N/A</Tag>
+              )}
             </div>
 
             {/* Ratings */}
             <div style={{ marginBottom: 16 }}>
-              {movie.imdbRating !== 'N/A' && (
+              {movie.imdbRating && movie.imdbRating !== 'N/A' && (
                 <Tag color="gold" style={{ marginRight: 8, marginBottom: 8 }}>
                   IMDb: {movie.imdbRating}/10
                 </Tag>
               )}
-              {movie.Metascore !== 'N/A' && (
+              {movie.Metascore && movie.Metascore !== 'N/A' && (
                 <Tag color="green" style={{ marginRight: 8, marginBottom: 8 }}>
                   Metascore: {movie.Metascore}/100
                 </Tag>
@@ -90,7 +94,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
             {/* Plot */}
             <div style={{ marginBottom: 16 }}>
               <Title level={4}>Plot</Title>
-              <Paragraph>{movie.Plot}</Paragraph>
+              <Paragraph>{movie.Plot || 'No plot description available.'}</Paragraph>
             </div>
           </div>
         </div>
@@ -103,16 +107,16 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
           bordered
           column={{ xxl: 4, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }}
         >
-          <Descriptions.Item label="Director">{movie.Director}</Descriptions.Item>
-          <Descriptions.Item label="Writer">{movie.Writer}</Descriptions.Item>
-          <Descriptions.Item label="Actors">{movie.Actors}</Descriptions.Item>
-          <Descriptions.Item label="Language">{movie.Language}</Descriptions.Item>
-          <Descriptions.Item label="Country">{movie.Country}</Descriptions.Item>
-          <Descriptions.Item label="Awards">{movie.Awards}</Descriptions.Item>
-          {movie.BoxOffice !== 'N/A' && (
+          <Descriptions.Item label="Director">{movie.Director || 'N/A'}</Descriptions.Item>
+          <Descriptions.Item label="Writer">{movie.Writer || 'N/A'}</Descriptions.Item>
+          <Descriptions.Item label="Actors">{movie.Actors || 'N/A'}</Descriptions.Item>
+          <Descriptions.Item label="Language">{movie.Language || 'N/A'}</Descriptions.Item>
+          <Descriptions.Item label="Country">{movie.Country || 'N/A'}</Descriptions.Item>
+          <Descriptions.Item label="Awards">{movie.Awards || 'N/A'}</Descriptions.Item>
+          {movie.BoxOffice && movie.BoxOffice !== 'N/A' && (
             <Descriptions.Item label="Box Office">{movie.BoxOffice}</Descriptions.Item>
           )}
-          {movie.DVD !== 'N/A' && (
+          {movie.DVD && movie.DVD !== 'N/A' && (
             <Descriptions.Item label="DVD Release">{movie.DVD}</Descriptions.Item>
           )}
         </Descriptions>

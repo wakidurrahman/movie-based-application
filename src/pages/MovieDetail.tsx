@@ -12,7 +12,7 @@ import {
   selectMovieStatus,
   selectSelectedMovie,
 } from '../store/moviesSlice';
-import { AppDispatch } from '../store/store';
+import { AppDispatch, RootState } from '../store/store';
 
 const MovieDetail = () => {
   const { movieId } = useParams<{ movieId: string }>();
@@ -20,7 +20,9 @@ const MovieDetail = () => {
   const movie = useSelector(selectSelectedMovie);
   const status = useSelector(selectMovieStatus);
   const error = useSelector(selectMovieError);
-  const isFavorite = useSelector(state => (movieId ? selectIsFavorite(state, movieId) : false));
+  const isFavorite = useSelector((state: RootState) =>
+    movieId ? selectIsFavorite(state, movieId) : false
+  );
 
   useEffect(() => {
     if (movieId) {

@@ -35,7 +35,24 @@ const LoadingSpinner = ({
     );
   }
 
-  return <Spin indicator={antIcon} tip={tip} />;
+  // For a non-fullscreen spinner, we have two options:
+  // 1. Use a true nested pattern with content
+  // 2. Don't use the tip prop at all
+
+  // Option 1: Create a proper nested pattern by adding content
+  return (
+    <div style={{ textAlign: 'center', padding: '30px 50px' }}>
+      <Spin indicator={antIcon} tip={tip}>
+        <div style={{ opacity: 0, height: '50px', padding: '20px' }}>
+          {/* Hidden content to create a proper nesting context */}
+          Content
+        </div>
+      </Spin>
+    </div>
+  );
+
+  // Option 2 (alternative): Remove tip if that's preferred
+  // return <Spin indicator={antIcon} />;
 };
 
 export default LoadingSpinner;

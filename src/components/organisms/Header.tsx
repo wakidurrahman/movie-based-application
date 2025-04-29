@@ -1,3 +1,4 @@
+import type { MenuProps } from 'antd';
 import { Layout, Menu, Typography } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -7,7 +8,19 @@ const { Title } = Typography;
 const Header = () => {
   const location = useLocation();
   const selectedKey =
-    location.pathname === '/' || location.pathname === '/movies' ? 'home' : 'detail';
+    location.pathname === '/' || location.pathname === '/movies' ? 'home' : 'favorites';
+
+  // Define menu items using the recommended format
+  const menuItems: MenuProps['items'] = [
+    {
+      key: 'home',
+      label: <Link to="/movies">Home</Link>,
+    },
+    {
+      key: 'favorites',
+      label: <Link to="/favorites">Favorites</Link>,
+    },
+  ];
 
   return (
     <AntHeader
@@ -38,14 +51,8 @@ const Header = () => {
           mode="horizontal"
           selectedKeys={[selectedKey]}
           style={{ border: 'none', width: 'auto' }}
-        >
-          <Menu.Item key="home">
-            <Link to="/movies">Home</Link>
-          </Menu.Item>
-          <Menu.Item key="favorites">
-            <Link to="/favorites">Favorites</Link>
-          </Menu.Item>
-        </Menu>
+          items={menuItems}
+        />
       </div>
     </AntHeader>
   );

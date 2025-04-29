@@ -1,4 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  fetchMovie,
+  fetchMovieById as fetchMovieByIdService,
+  searchMovies,
+} from '../services/movieService';
 import type { RootState } from './store';
 
 // Define a movie interface based on our data schema
@@ -36,6 +41,7 @@ interface MoviesState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
   selectedMovie: Movie | null;
+  searchResults: Movie[];
 }
 
 // Initial state
@@ -44,19 +50,74 @@ const initialState: MoviesState = {
   status: 'idle',
   error: null,
   selectedMovie: null,
+  searchResults: [],
 };
 
-// Thunk for fetching movies
-export const fetchMovies = createAsyncThunk('movies/fetchMovies', async () => {
+// Thunk for fetching a default movie
+export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { getState }) => {
   try {
-    // In a real app, we would fetch from an API
-    // For now, fetch from our dummy.json using a relative path
-    const response = await import('../data/dummy.json');
-    return response.default as Movie[];
+    const state = getState() as RootState;
+
+    // If we already have movies and are not in a failed state, use what we have
+    if (state.movies.list.length > 0 && state.movies.status !== 'failed') {
+      console.log('Using existing movies from state instead of fetching again');
+      return state.movies.list;
+    }
+
+    const response = await fetchMovie();
+    const data = response.data;
+
+    console.log('Fetch movies response:', data);
+
+    // Check if we got a Search array (either dev or prod mode)
+    if (data.Search && Array.isArray(data.Search)) {
+      console.log('Got movies from Search array:', data.Search.length);
+      return data.Search;
+    }
+
+    // Check for Movies array (backward compatibility with previous dev mode)
+    if (data.Movies && Array.isArray(data.Movies)) {
+      console.log('Got movies from Movies array:', data.Movies.length);
+      return data.Movies;
+    }
+
+    // Otherwise check if we got a single movie
+    if (data.Response === 'True' && data.Title) {
+      console.log('Got a single movie:', data.Title);
+      return [data];
+    }
+
+    console.log('No movies found in response');
+    return [];
   } catch (error) {
+    console.error('Error fetching movies:', error);
     throw error;
   }
 });
+
+// Thunk for searching movies
+export const searchMoviesByTerm = createAsyncThunk(
+  'movies/searchMoviesByTerm',
+  async (searchTerm: string) => {
+    try {
+      // Skip empty searches
+      if (!searchTerm.trim()) {
+        return [];
+      }
+
+      const response = await searchMovies(searchTerm);
+      const data = response.data;
+
+      if (data.Response === 'True') {
+        return data.Search || [];
+      }
+
+      return [];
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
 // Thunk for fetching a single movie by ID
 export const fetchMovieById = createAsyncThunk(
@@ -67,16 +128,15 @@ export const fetchMovieById = createAsyncThunk(
     // First, check if we already have the movie in our state
     const existingMovie = state.movies.list.find((movie: Movie) => movie.imdbID === movieId);
     if (existingMovie) {
+      console.log('Using cached movie from state:', movieId);
       return existingMovie;
     }
 
-    // If not found in state, fetch from dummy data
-    // In a real app, we would make an API call with the ID
-    const response = await import('../data/dummy.json');
-    const allMovies = response.default as Movie[];
-    const movie = allMovies.find((movie: Movie) => movie.imdbID === movieId);
+    // If not found in state, fetch from API service
+    const response = await fetchMovieByIdService(movieId);
+    const movie = response.data;
 
-    if (!movie) {
+    if (movie.Response !== 'True') {
       throw new Error('Movie not found');
     }
 
@@ -110,11 +170,36 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchMovies.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.list = action.payload;
+
+        // Add any new movies to the list
+        action.payload.forEach((movie: Movie) => {
+          if (!state.list.some(m => m.imdbID === movie.imdbID)) {
+            state.list.push(movie);
+          }
+        });
       })
       .addCase(fetchMovies.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Something went wrong';
+      })
+      // Handle searchMoviesByTerm
+      .addCase(searchMoviesByTerm.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(searchMoviesByTerm.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.searchResults = action.payload;
+
+        // Add search results to the main list if they don't already exist
+        action.payload.forEach((movie: Movie) => {
+          if (!state.list.some(m => m.imdbID === movie.imdbID)) {
+            state.list.push(movie);
+          }
+        });
+      })
+      .addCase(searchMoviesByTerm.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Something went wrong with search';
       })
       // Handle fetchMovieById
       .addCase(fetchMovieById.pending, state => {
@@ -140,6 +225,7 @@ export const { setMovies, addMovie, removeMovie, setSelectedMovie } = moviesSlic
 
 // Selectors
 export const selectAllMovies = (state: RootState) => state.movies.list;
+export const selectSearchResults = (state: RootState) => state.movies.searchResults;
 export const selectMovieStatus = (state: RootState) => state.movies.status;
 export const selectMovieError = (state: RootState) => state.movies.error;
 export const selectSelectedMovie = (state: RootState) => state.movies.selectedMovie;

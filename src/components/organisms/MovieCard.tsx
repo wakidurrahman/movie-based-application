@@ -15,12 +15,12 @@ interface MovieCardProps {
 const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
   // Default image if poster is not available
   const imageSrc =
-    movie.Poster === 'N/A'
+    movie.Poster === 'N/A' || !movie.Poster
       ? 'https://via.placeholder.com/300x450?text=No+Image+Available'
       : movie.Poster;
 
-  // Extract year from release date
-  const genres = movie.Genre.split(', ');
+  // Extract genres and handle potential undefined values
+  const genres = movie.Genre && typeof movie.Genre === 'string' ? movie.Genre.split(', ') : [];
 
   return (
     <Card
@@ -28,7 +28,7 @@ const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
       cover={
         <div style={{ height: 300, overflow: 'hidden', position: 'relative' }}>
           <img
-            alt={movie.Title}
+            alt={movie.Title || 'Movie poster'}
             src={imageSrc}
             style={{
               width: '100%',
@@ -54,26 +54,34 @@ const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
     >
       <Link to={`/movies/${movie.imdbID}`} style={{ color: 'inherit' }}>
         <Meta
-          title={movie.Title}
+          title={movie.Title || 'Unknown Title'}
           description={
             <Space direction="vertical" size={2}>
               <Space>
-                <Text type="secondary">{movie.Year}</Text>
+                <Text type="secondary">{movie.Year || 'N/A'}</Text>
                 <Text type="secondary">•</Text>
-                <Text type="secondary">{movie.Runtime}</Text>
+                <Text type="secondary">{movie.Runtime || 'N/A'}</Text>
               </Space>
 
               <div>
-                {genres.slice(0, 2).map((genre, index) => (
-                  <Tag key={index} color="blue" style={{ marginBottom: 5 }}>
-                    {genre}
-                  </Tag>
-                ))}
-                {genres.length > 2 && <Tag color="blue">+{genres.length - 2}</Tag>}
+                {genres.length > 0 ? (
+                  <>
+                    {genres.slice(0, 2).map((genre, index) => (
+                      <Tag key={index} color="blue" style={{ marginBottom: 5 }}>
+                        {genre}
+                      </Tag>
+                    ))}
+                    {genres.length > 2 && <Tag color="blue">+{genres.length - 2}</Tag>}
+                  </>
+                ) : (
+                  <Tag color="blue">Genre N/A</Tag>
+                )}
               </div>
 
               <div>
-                {movie.imdbRating !== 'N/A' && <Tag color="gold">★ {movie.imdbRating}/10</Tag>}
+                {movie.imdbRating && movie.imdbRating !== 'N/A' ? (
+                  <Tag color="gold">★ {movie.imdbRating}/10</Tag>
+                ) : null}
               </div>
             </Space>
           }

@@ -1,12 +1,19 @@
 import { Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { config } from '../app.config';
 import LoadingSpinner from '../components/atoms/LoadingSpinner';
 import SearchBar from '../components/atoms/SearchBar';
 import MovieList from '../components/molecules/MovieList';
 import Base from '../components/template/Base';
 import { selectFavoriteIds, toggleFavorite } from '../store/favoritesSlice';
-import { fetchMovies, Movie, selectAllMovies, selectMovieStatus } from '../store/moviesSlice';
+import {
+  fetchMovies,
+  searchMoviesByTerm,
+  selectAllMovies,
+  selectMovieStatus,
+  selectSearchResults,
+} from '../store/moviesSlice';
 import { AppDispatch } from '../store/store';
 
 const { Title } = Typography;
@@ -14,33 +21,44 @@ const { Title } = Typography;
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
   const movies = useSelector(selectAllMovies);
+  const searchResults = useSelector(selectSearchResults);
   const favoriteIds = useSelector(selectFavoriteIds);
   const status = useSelector(selectMovieStatus);
-  const [filteredMovies, setFilteredMovies] = useState(movies);
+  const [searchTerm, setSearchTerm] = useState('');
+  const initialLoadComplete = useRef(false);
 
-  // Fetch movies on component mount
+  // Fetch movies on component mount - only run once
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchMovies());
-    }
-  }, [status, dispatch]);
-
-  // Update filtered movies when movies are loaded
-  useEffect(() => {
-    setFilteredMovies(movies);
-  }, [movies]);
-
-  // Handle search
-  const handleSearch = (searchTerm: string) => {
-    if (!searchTerm.trim()) {
-      setFilteredMovies(movies);
+    // Prevent additional API calls if we already have movies or already started loading
+    if (initialLoadComplete.current || status === 'loading' || movies.length > 0) {
       return;
     }
 
-    const filtered = movies.filter((movie: Movie) =>
-      movie.Title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredMovies(filtered);
+    console.log('Fetching movies on mount, isDev:', config.isDevelopment);
+    dispatch(fetchMovies());
+    initialLoadComplete.current = true;
+  }, [dispatch, status, movies.length]);
+
+  // Handle search
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+
+    if (!searchTerm.trim()) {
+      // In dev mode, we already have all movies
+      if (config.isDevelopment) {
+        console.log('Empty search in dev mode, using all movies');
+        return;
+      }
+
+      // In prod mode, fetch default movie if we don't have any movies yet
+      if (movies.length === 0) {
+        dispatch(fetchMovies());
+      }
+      return;
+    }
+
+    console.log('Searching for:', searchTerm);
+    dispatch(searchMoviesByTerm(searchTerm));
   };
 
   // Handle favorite toggle
@@ -66,6 +84,18 @@ const Home = () => {
     );
   }
 
+  // Determine which movies to display
+  const moviesToDisplay = searchTerm && searchResults.length > 0 ? searchResults : movies;
+  console.log(
+    'Movies to display:',
+    moviesToDisplay.length,
+    searchTerm ? 'from search' : 'from all movies'
+  );
+
+  if (searchTerm && searchResults.length === 0 && status !== 'loading') {
+    console.log('No search results found for:', searchTerm);
+  }
+
   return (
     <Base>
       <div style={{ marginBottom: 32 }}>
@@ -74,7 +104,7 @@ const Home = () => {
           <SearchBar onSearch={handleSearch} />
         </div>
         <MovieList
-          movies={filteredMovies}
+          movies={moviesToDisplay}
           favoriteIds={favoriteIds}
           onFavoriteToggle={handleFavoriteToggle}
         />
