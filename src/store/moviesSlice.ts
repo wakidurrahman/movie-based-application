@@ -99,23 +99,19 @@ export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { ge
 export const searchMoviesByTerm = createAsyncThunk(
   'movies/searchMoviesByTerm',
   async (searchTerm: string) => {
-    try {
-      // Skip empty searches
-      if (!searchTerm.trim()) {
-        return [];
-      }
-
-      const response = await searchMovies(searchTerm);
-      const data = response.data;
-
-      if (data.Response === 'True') {
-        return data.Search || [];
-      }
-
+    // Skip empty searches
+    if (!searchTerm.trim()) {
       return [];
-    } catch (error) {
-      throw error;
     }
+
+    const response = await searchMovies(searchTerm);
+    const data = response.data;
+
+    if (data.Response === 'True') {
+      return data.Search || [];
+    }
+
+    return [];
   }
 );
 

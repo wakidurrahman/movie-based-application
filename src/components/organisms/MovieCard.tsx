@@ -4,7 +4,7 @@ import { Movie } from '../../store/moviesSlice';
 import FavoriteIcon from '../atoms/FavoriteIcon';
 
 const { Meta } = Card;
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 interface MovieCardProps {
   movie: Movie;

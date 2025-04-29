@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { config, endpoints } from '../app.config';
+import { Movie } from '../store/moviesSlice';
 
 // Simple cache implementation to prevent duplicate API calls
 const apiCache = new Map();
@@ -65,7 +66,7 @@ const fetchDummyData = async () => {
  */
 const getMovieByIdFromDummy = async (id: string) => {
   const allMovies = await fetchDummyData();
-  const movie = allMovies.find((movie: any) => movie.imdbID === id);
+  const movie = allMovies.find((movie: Movie) => movie.imdbID === id);
 
   if (!movie) {
     throw new Error('Movie not found');
@@ -95,7 +96,7 @@ const getMoviesFromDummy = async (title?: string) => {
   }
 
   // Find movie with title containing the search term (case insensitive)
-  const movie = allMovies.find((movie: any) =>
+  const movie = allMovies.find((movie: Movie) =>
     movie.Title.toLowerCase().includes(title.toLowerCase())
   );
 
@@ -131,7 +132,7 @@ const searchMoviesFromDummy = async (searchTerm: string) => {
   }
 
   // Filter movies with title containing the search term (case insensitive)
-  const movies = allMovies.filter((movie: any) =>
+  const movies = allMovies.filter((movie: Movie) =>
     movie.Title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
