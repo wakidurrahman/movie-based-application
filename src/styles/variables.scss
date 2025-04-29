@@ -5,6 +5,7 @@ $secondary-color: #141414;
 $tertiary-color: #1f1f1f;
 
 $duodecim-color: #858585;
+$favorite-color: rgba(255, 255, 255, 0.8);
 
 // Fonts
 $font-family: 'Roboto', sans-serif;
@@ -18,3 +19,7 @@ $breakpoint-small: 576px;
 $breakpoint-medium: 768px;
 $breakpoint-large: 992px;
 $breakpoint-xlarge: 1200px;
+
+// z-index
+$z-index-header: 1000;
+$z-index-favorite-button: 1;
