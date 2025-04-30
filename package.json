@@ -3,9 +3,27 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "A responsive, movie-browsing SPA built with React, TypeScript, Vite, Ant Design, and SCSS.",
+  "keywords": [
+    "react",
+    "typescript",
+    "vite",
+    "ant design",
+    "scss",
+    "vitest",
+    "CI",
+    "Atomic Design",
+    "Redux",
+    "Axios",
+    "Ant Design",
+    "SPA",
+    "Responsive"
+  ],
   "engines": {
-    "node": ">=22.14.0",
-    "npm": ">=10.8.2"
+    "node": ">=22.14.0 <23.0.0",
+    "npm": "~10.8.2",
+    "yarn": "please-use-npm",
+    "pnpm": "please-use-npm"
   },
   "author": "Wakidur Rahman",
   "scripts": {
