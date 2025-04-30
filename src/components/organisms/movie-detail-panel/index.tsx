@@ -37,7 +37,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
         {/* Back button */}
         <Col span={24}>
           <Link to="/movies">
-            <Button type="text" icon={<ArrowLeftOutlined />}>
+            <Button type="text" size="large" icon={<ArrowLeftOutlined />}>
               Back to Movies
             </Button>
           </Link>
@@ -128,9 +128,13 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
                 <Col>
                   <Statistic
                     title="YOUR RATING"
-                    value={0}
+                    value={movie.imdbRating ? Number(movie.imdbRating) / 2 : 0}
                     formatter={() => (
-                      <Rate allowHalf defaultValue={0} character={<StarOutlined />} />
+                      <Rate
+                        allowHalf
+                        defaultValue={movie.imdbRating ? Number(movie.imdbRating) / 2 : 0}
+                        character={<StarOutlined />}
+                      />
                     )}
                   />
                   <Text type="secondary">Rate this</Text>
