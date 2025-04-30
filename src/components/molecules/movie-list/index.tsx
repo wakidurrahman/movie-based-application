@@ -1,4 +1,4 @@
-import { Col, Empty, Row } from 'antd';
+import { Col, Row } from 'antd';
 import { Movie } from '../../../store/moviesSlice';
 import MovieCard from '../../organisms/movie-card';
 import './index.scss';
@@ -10,22 +10,17 @@ interface MovieListProps {
 }
 
 const MovieList = ({ movies, onFavoriteToggle, favoriteIds }: MovieListProps) => {
-  if (!movies.length) {
-    return <Empty className="m-movie-list__empty" description="No movies found" />;
-  }
-
   return (
     <div className="m-movie-list">
-      <Row gutter={[16, 16]} className="m-movie-list__row">
+      <Row gutter={[16, 16]}>
         {movies.map(movie => (
           <Col
             key={movie.imdbID}
             xs={24}
             sm={12}
-            md={8}
-            lg={6}
-            xl={6}
-            className="m-movie-list__col"
+            md={movies.length <= 2 ? 12 : 6}
+            lg={movies.length <= 2 ? 12 : 6}
+            xl={movies.length <= 2 ? 12 : 6}
           >
             <MovieCard
               movie={movie}

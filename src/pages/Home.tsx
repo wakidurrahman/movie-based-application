@@ -1,11 +1,10 @@
-import { Typography } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { Empty, Flex, Typography } from 'antd';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingSpinner from '../components/atoms/loading-spinner';
 import SearchBar from '../components/atoms/search-bar';
 import MovieList from '../components/molecules/movie-list';
 import Base from '../components/template/base/';
-import { config } from '../config/app.config';
 import { selectFavoriteIds, toggleFavorite } from '../store/favoritesSlice';
 import {
   fetchMovies,
@@ -15,6 +14,7 @@ import {
   selectSearchResults,
 } from '../store/moviesSlice';
 import { AppDispatch } from '../store/store';
+import { useSearch } from '../utils/search';
 
 const { Title } = Typography;
 
@@ -24,91 +24,58 @@ const Home = () => {
   const searchResults = useSelector(selectSearchResults);
   const favoriteIds = useSelector(selectFavoriteIds);
   const status = useSelector(selectMovieStatus);
-  const [searchTerm, setSearchTerm] = useState('');
-  const initialLoadComplete = useRef(false);
 
-  // Fetch movies on component mount - only run once
+  // Set up search with the utility hook
+  const { searchTerm, isSearchActive, debouncedSearch } = useSearch('', term =>
+    dispatch(searchMoviesByTerm(term))
+  );
+
+  // Initial data loading
   useEffect(() => {
-    // Prevent additional API calls if we already have movies or already started loading
-    if (initialLoadComplete.current || status === 'loading' || movies.length > 0) {
-      return;
+    if (status !== 'loading' && movies.length === 0) {
+      dispatch(fetchMovies());
     }
-
-    console.log('Fetching movies on mount, isDev:', config.isDevelopment);
-    dispatch(fetchMovies());
-    initialLoadComplete.current = true;
   }, [dispatch, status, movies.length]);
-
-  // Handle search
-  const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm);
-
-    if (!searchTerm.trim()) {
-      // In dev mode, we already have all movies
-      if (config.isDevelopment) {
-        console.log('Empty search in dev mode, using all movies');
-        return;
-      }
-
-      // In prod mode, fetch default movie if we don't have any movies yet
-      if (movies.length === 0) {
-        dispatch(fetchMovies());
-      }
-      return;
-    }
-
-    console.log('Searching for:', searchTerm);
-    dispatch(searchMoviesByTerm(searchTerm));
-  };
 
   // Handle favorite toggle
   const handleFavoriteToggle = (movieId: string) => {
     dispatch(toggleFavorite(movieId));
   };
 
-  // Show loading state
-  if (status === 'loading' && movies.length === 0) {
-    return (
-      <Base>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '50vh',
-          }}
-        >
-          <LoadingSpinner />
-        </div>
-      </Base>
-    );
-  }
+  // Check if any loading operation is in progress
+  const isLoading = status === 'loading';
 
   // Determine which movies to display
-  const moviesToDisplay = searchTerm && searchResults.length > 0 ? searchResults : movies;
-  console.log(
-    'Movies to display:',
-    moviesToDisplay.length,
-    searchTerm ? 'from search' : 'from all movies'
-  );
-
-  if (searchTerm && searchResults.length === 0 && status !== 'loading') {
-    console.log('No search results found for:', searchTerm);
-  }
+  const moviesToDisplay = isSearchActive ? searchResults : movies;
+  const showNoResults = isSearchActive && !isLoading && searchResults.length === 0;
+  const showMovieList = !isLoading && moviesToDisplay.length > 0;
+  const showEmptyState = !isSearchActive && !isLoading && movies.length === 0 && status !== 'idle';
 
   return (
     <Base>
-      <div style={{ marginBottom: 32 }}>
+      <Flex vertical align="center" justify="space-between" gap={24}>
         <Title level={2}>Explore Movies</Title>
-        <div style={{ marginBottom: 24 }}>
-          <SearchBar onSearch={handleSearch} />
-        </div>
-        <MovieList
-          movies={moviesToDisplay}
-          favoriteIds={favoriteIds}
-          onFavoriteToggle={handleFavoriteToggle}
-        />
-      </div>
+        <SearchBar onSearch={debouncedSearch} />
+
+        {isLoading && <LoadingSpinner />}
+
+        {showNoResults && (
+          <Empty
+            className="m-movie-list__empty"
+            description={`No results found for "${searchTerm}"`}
+          />
+        )}
+
+        {showEmptyState && <Empty className="m-movie-list__empty" description="No movies found" />}
+
+        {showMovieList && (
+          <MovieList
+            movies={moviesToDisplay}
+            favoriteIds={favoriteIds}
+            onFavoriteToggle={handleFavoriteToggle}
+          />
+        )}
+      </Flex>
     </Base>
   );
 };

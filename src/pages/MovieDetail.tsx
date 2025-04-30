@@ -36,59 +36,31 @@ const MovieDetail = () => {
     }
   };
 
-  // Loading state
-  if (status === 'loading') {
-    return (
-      <Base>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '50vh',
-          }}
-        >
-          <LoadingSpinner />
-        </div>
-      </Base>
-    );
-  }
-
-  // Error state
-  if (status === 'failed') {
-    return (
-      <Base>
+  return (
+    <Base>
+      {status === 'loading' ? (
+        <LoadingSpinner />
+      ) : status === 'failed' ? (
         <Alert
           message="Error"
           description={error || 'Failed to load movie details'}
           type="error"
           showIcon
         />
-      </Base>
-    );
-  }
-
-  // Not found state
-  if (!movie) {
-    return (
-      <Base>
+      ) : !movie ? (
         <Alert
           message="Not Found"
           description="The movie you're looking for doesn't exist"
           type="warning"
           showIcon
         />
-      </Base>
-    );
-  }
-
-  return (
-    <Base>
-      <MovieDetailPanel
-        movie={movie}
-        isFavorite={isFavorite}
-        onFavoriteToggle={handleFavoriteToggle}
-      />
+      ) : (
+        <MovieDetailPanel
+          movie={movie}
+          isFavorite={isFavorite}
+          onFavoriteToggle={handleFavoriteToggle}
+        />
+      )}
     </Base>
   );
 };

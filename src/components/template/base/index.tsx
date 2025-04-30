@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import Footer from '../../organisms/footer/';
 import Header from '../../organisms/header/';
 import './index.scss';
-
 const { Content } = Layout;
 
 interface BaseTemplateProps {
@@ -14,7 +13,7 @@ const Base = ({ children }: BaseTemplateProps) => {
   return (
     <Layout className="t-base">
       <Header />
-      <Content className="t-base__content">{children}</Content>
+      <Content>{children}</Content>
       <Footer />
     </Layout>
   );
