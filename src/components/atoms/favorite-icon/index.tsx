@@ -5,10 +5,9 @@ interface FavoriteIconProps {
   isFavorite: boolean;
   onClick: () => void;
   size?: number;
-  color?: string;
 }
 
-const FavoriteIcon = ({ isFavorite, onClick, size = 24, color = '#ff4d4f' }: FavoriteIconProps) => {
+const FavoriteIcon = ({ isFavorite, onClick, size = 24 }: FavoriteIconProps) => {
   return (
     <div
       className="a-favorite-icon"
@@ -18,9 +17,9 @@ const FavoriteIcon = ({ isFavorite, onClick, size = 24, color = '#ff4d4f' }: Fav
       tabIndex={0}
     >
       {isFavorite ? (
-        <FaHeart size={size} color={color} />
+        <FaHeart size={size} className="a-favorite-icon__heart" />
       ) : (
-        <FaRegHeart size={size} color={color} />
+        <FaRegHeart size={size} className="a-favorite-icon__heart" />
       )}
     </div>
   );

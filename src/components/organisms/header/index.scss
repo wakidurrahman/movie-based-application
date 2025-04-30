@@ -8,7 +8,6 @@
   padding: 0 20px;
   background-color: vars.$white-color;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
 
   @media (max-width: vars.$breakpoint-medium) {
     padding: 0 15px;
@@ -18,20 +17,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-
-  &__logo-container {
-    display: flex;
-    align-items: center;
-  }
-
-  &__logo {
-    cursor: pointer;
-  }
-
-  &__menu {
-    border: none;
-    width: auto;
   }
 
   h1.o-header__logo {

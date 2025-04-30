@@ -1,5 +1,19 @@
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Button, Descriptions, Divider, Flex, Image, Space, Tag, Typography } from 'antd';
+import { ArrowLeftOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Descriptions,
+  Divider,
+  Image,
+  Rate,
+  Row,
+  Space,
+  Statistic,
+  Tag,
+  Typography,
+} from 'antd';
 import { Link } from 'react-router-dom';
 import { Movie } from '../../../store/moviesSlice';
 import FavoriteIcon from '../../atoms/favorite-icon';
@@ -15,114 +29,186 @@ interface MovieDetailPanelProps {
 
 const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPanelProps) => {
   const imageSrc =
-    !movie.Poster || movie.Poster === 'N/A'
-      ? 'https://via.placeholder.com/300x450?text=No+Image+Available'
-      : movie.Poster;
+    !movie.Poster || movie.Poster === 'N/A' ? 'https://placehold.jp/300x450.png' : movie.Poster;
 
   return (
     <div className="o-movie-detail-panel">
-      <Flex vertical>
-        <div className="o-movie-detail-panel__back-button">
+      <Row gutter={[0, 24]}>
+        {/* Back button */}
+        <Col span={24}>
           <Link to="/movies">
             <Button type="text" icon={<ArrowLeftOutlined />}>
               Back to Movies
             </Button>
           </Link>
-        </div>
+        </Col>
 
-        <Flex vertical gap={32}>
-          <div className="o-movie-detail-panel__header">
-            {/* Movie poster */}
-            <div className="o-movie-detail-panel__poster">
-              <Image
-                className="o-movie-detail-panel__poster-image"
-                src={imageSrc}
-                alt={movie.Title || 'Movie poster'}
-                fallback="https://via.placeholder.com/300x450?text=No+Image+Available"
-              />
-            </div>
+        {/* Title section */}
+        <Col span={24}>
+          <Title level={1} className="o-movie-detail-panel__title">
+            {movie.Title || 'Unknown Title'} <Text type="secondary">({movie.Year || 'N/A'})</Text>
+          </Title>
+        </Col>
 
-            {/* Movie info */}
-            <div className="o-movie-detail-panel__info">
-              <div className="o-movie-detail-panel__info-header">
-                <Title level={2} className="o-movie-detail-panel__info-title">
-                  {movie.Title || 'Unknown Title'}
-                </Title>
-                <FavoriteIcon isFavorite={isFavorite} onClick={onFavoriteToggle} size={28} />
-              </div>
-
-              <Space
-                direction="horizontal"
-                size={16}
-                wrap
-                className="o-movie-detail-panel__info-meta"
+        {/* Main content */}
+        <Col span={24}>
+          <Row gutter={24}>
+            {/* Left column - Poster */}
+            <Col xs={24} sm={24} md={8} lg={6}>
+              <Card
+                cover={
+                  <Image
+                    alt={movie.Title || 'Movie poster'}
+                    src={imageSrc}
+                    fallback="https://placehold.jp/300x450.png"
+                  />
+                }
+                actions={[
+                  <Button
+                    type="text"
+                    onClick={onFavoriteToggle}
+                    icon={<FavoriteIcon isFavorite={isFavorite} onClick={() => {}} size={20} />}
+                  >
+                    {isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                  </Button>,
+                ]}
               >
-                <Text>{movie.Year || 'N/A'}</Text>
-                <Text>•</Text>
-                <Text>{movie.Runtime || 'N/A'}</Text>
-                <Text>•</Text>
-                <Text>{movie.Rated || 'N/A'}</Text>
-              </Space>
+                {movie.Poster && movie.Poster !== 'N/A' && (
+                  <Card.Meta
+                    description={
+                      <Space direction="vertical" size="small">
+                        <Text type="secondary">Released: {movie.Released || 'N/A'}</Text>
+                        <Text type="secondary">Runtime: {movie.Runtime || 'N/A'}</Text>
+                        <Text type="secondary">Rated: {movie.Rated || 'N/A'}</Text>
+                      </Space>
+                    }
+                  />
+                )}
+              </Card>
 
-              {/* Genres */}
-              <div className="o-movie-detail-panel__info-genres">
+              {/* Photos section */}
+              <Card
+                title="Photos"
+                className="o-movie-detail-panel__photos-card"
+                style={{ marginTop: 16 }}
+              >
+                <div className="o-movie-detail-panel__photos">
+                  <Avatar shape="square" size={64} src={imageSrc} />
+                  <Avatar shape="square" size={64} src={imageSrc} />
+                  <Avatar shape="square" size={64} src={imageSrc} />
+                  <Button type="text">See all photos</Button>
+                </div>
+              </Card>
+            </Col>
+
+            {/* Right column - Movie details */}
+            <Col xs={24} sm={24} md={16} lg={18}>
+              {/* Ratings row */}
+              <Row gutter={16} className="o-movie-detail-panel__ratings">
+                <Col>
+                  <Statistic
+                    title={
+                      <>
+                        <StarFilled style={{ color: '#fadb14' }} /> IMDb RATING
+                      </>
+                    }
+                    value={movie.imdbRating || 'N/A'}
+                    suffix="/10"
+                    valueStyle={{ fontSize: '2rem' }}
+                  />
+                  <Text type="secondary">
+                    {movie.imdbVotes && movie.imdbVotes !== 'N/A'
+                      ? `${movie.imdbVotes} votes`
+                      : 'No votes'}
+                  </Text>
+                </Col>
+
+                <Divider type="vertical" style={{ height: '60px' }} />
+
+                <Col>
+                  <Statistic
+                    title="YOUR RATING"
+                    value={0}
+                    formatter={() => (
+                      <Rate allowHalf defaultValue={0} character={<StarOutlined />} />
+                    )}
+                  />
+                  <Text type="secondary">Rate this</Text>
+                </Col>
+
+                <Divider type="vertical" style={{ height: '60px' }} />
+
+                <Col>
+                  <Statistic
+                    title="POPULARITY"
+                    value={movie.Metascore || 'N/A'}
+                    valueStyle={{ fontSize: '2rem' }}
+                  />
+                  <Text type="secondary">Metascore</Text>
+                </Col>
+              </Row>
+
+              {/* Categories */}
+              <Space size={[8, 16]} wrap style={{ margin: '24px 0' }}>
                 {movie.Genre && typeof movie.Genre === 'string' ? (
                   movie.Genre.split(', ').map((genre, index) => (
-                    <Tag key={index} color="blue" style={{ marginRight: 8, marginBottom: 8 }}>
+                    <Tag key={index} className="o-movie-detail-panel__genre-tag">
                       {genre}
                     </Tag>
                   ))
                 ) : (
-                  <Tag color="blue">Genre N/A</Tag>
+                  <Tag>Genre N/A</Tag>
                 )}
-              </div>
-
-              {/* Ratings */}
-              <div className="o-movie-detail-panel__info-ratings">
-                {movie.imdbRating && movie.imdbRating !== 'N/A' && (
-                  <Tag color="gold" style={{ marginRight: 8, marginBottom: 8 }}>
-                    IMDb: {movie.imdbRating}/10
-                  </Tag>
-                )}
-                {movie.Metascore && movie.Metascore !== 'N/A' && (
-                  <Tag color="green" style={{ marginRight: 8, marginBottom: 8 }}>
-                    Metascore: {movie.Metascore}/100
-                  </Tag>
-                )}
-              </div>
+              </Space>
 
               {/* Plot */}
-              <div className="o-movie-detail-panel__info-plot">
-                <Title level={4}>Plot</Title>
-                <Paragraph>{movie.Plot || 'No plot description available.'}</Paragraph>
-              </div>
-            </div>
-          </div>
+              <Paragraph className="o-movie-detail-panel__plot">
+                {movie.Plot || 'No plot description available.'}
+              </Paragraph>
 
-          <Divider />
+              <Divider />
 
-          {/* Additional details */}
-          <Descriptions
-            className="o-movie-detail-panel__details"
-            title="Movie Details"
-            bordered
-            column={{ xxl: 4, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }}
-          >
-            <Descriptions.Item label="Director">{movie.Director || 'N/A'}</Descriptions.Item>
-            <Descriptions.Item label="Writer">{movie.Writer || 'N/A'}</Descriptions.Item>
-            <Descriptions.Item label="Actors">{movie.Actors || 'N/A'}</Descriptions.Item>
-            <Descriptions.Item label="Language">{movie.Language || 'N/A'}</Descriptions.Item>
-            <Descriptions.Item label="Country">{movie.Country || 'N/A'}</Descriptions.Item>
-            <Descriptions.Item label="Awards">{movie.Awards || 'N/A'}</Descriptions.Item>
-            {movie.BoxOffice && movie.BoxOffice !== 'N/A' && (
-              <Descriptions.Item label="Box Office">{movie.BoxOffice}</Descriptions.Item>
-            )}
-            {movie.DVD && movie.DVD !== 'N/A' && (
-              <Descriptions.Item label="DVD Release">{movie.DVD}</Descriptions.Item>
-            )}
-          </Descriptions>
-        </Flex>
-      </Flex>
+              {/* Credits section */}
+              <Row gutter={[16, 16]}>
+                <Col xs={24} sm={8}>
+                  <Title level={5}>Director</Title>
+                  <Text>{movie.Director || 'N/A'}</Text>
+                </Col>
+
+                <Col xs={24} sm={8}>
+                  <Title level={5}>Writers</Title>
+                  <Text>{movie.Writer || 'N/A'}</Text>
+                </Col>
+
+                <Col xs={24} sm={8}>
+                  <Title level={5}>Stars</Title>
+                  <Text>{movie.Actors || 'N/A'}</Text>
+                </Col>
+              </Row>
+
+              <Divider />
+
+              {/* Additional details */}
+              <Card title="Details" bordered={false}>
+                <Descriptions layout="vertical" column={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
+                  <Descriptions.Item label="Country">{movie.Country || 'N/A'}</Descriptions.Item>
+                  <Descriptions.Item label="Language">{movie.Language || 'N/A'}</Descriptions.Item>
+                  <Descriptions.Item label="Awards">{movie.Awards || 'N/A'}</Descriptions.Item>
+                  {movie.BoxOffice && movie.BoxOffice !== 'N/A' && (
+                    <Descriptions.Item label="Box Office">{movie.BoxOffice}</Descriptions.Item>
+                  )}
+                  {movie.DVD && movie.DVD !== 'N/A' && (
+                    <Descriptions.Item label="DVD Release">{movie.DVD}</Descriptions.Item>
+                  )}
+                  {movie.Production && movie.Production !== 'N/A' && (
+                    <Descriptions.Item label="Production">{movie.Production}</Descriptions.Item>
+                  )}
+                </Descriptions>
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </div>
   );
 };

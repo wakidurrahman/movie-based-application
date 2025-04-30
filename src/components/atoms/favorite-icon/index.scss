@@ -1,3 +1,5 @@
+@use '../../../styles/variables.scss' as vars;
+
 .a-favorite-icon {
   cursor: pointer;
   display: inline-block;
@@ -9,5 +11,9 @@
 
   &:active {
     transform: scale(0.95);
+  }
+
+  &__heart {
+    color: vars.$favorite-color-heart;
   }
 }

@@ -9,11 +9,7 @@ interface SearchBarProps {
   delay?: number;
 }
 
-const SearchBar = ({
-  onSearch,
-  placeholder = 'Search for movies...',
-  delay = 500,
-}: SearchBarProps) => {
+const SearchBar = ({ onSearch, placeholder, delay = 500 }: SearchBarProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Debounce search term
@@ -39,6 +35,7 @@ const SearchBar = ({
       value={searchTerm}
       onChange={handleChange}
       allowClear
+      size="large"
     />
   );
 };

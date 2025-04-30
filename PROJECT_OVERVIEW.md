@@ -25,7 +25,7 @@
 **Atoms:**
 
 - `SearchBar.tsx` - Debounced search input ✅
-- `RHFInputField.tsx` - Reusable input field ✅
+- `InputField.tsx` - Reusable input field ✅
 - `FavoriteIcon.tsx` - Toggleable heart icon ✅
 - `LoadingSpinner.tsx` - Loading indicator ✅
 

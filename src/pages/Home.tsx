@@ -55,7 +55,7 @@ const Home = () => {
     <Base>
       <Flex vertical align="center" justify="space-between" gap={24}>
         <Title level={2}>Explore Movies</Title>
-        <SearchBar onSearch={debouncedSearch} />
+        <SearchBar placeholder="Search for movies..." onSearch={debouncedSearch} />
 
         {isLoading && <LoadingSpinner />}
 

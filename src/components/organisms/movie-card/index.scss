@@ -26,6 +26,8 @@
   }
 
   &__info {
+    width: 100%;
+    align-items: center;
     &-row {
       display: flex;
       align-items: center;
@@ -41,7 +43,6 @@
     }
 
     &-rating {
-      margin-top: 8px;
     }
   }
 }

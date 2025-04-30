@@ -26,19 +26,12 @@ const Header = () => {
   return (
     <AntHeader className="o-header">
       <div className="o-header__container">
-        <div className="o-header__logo-container">
-          <Link to="/movies">
-            <Title level={1} className="o-header__logo">
-              🎬 Movies
-            </Title>
-          </Link>
-        </div>
-        <Menu
-          mode="horizontal"
-          selectedKeys={[selectedKey]}
-          className="o-header__menu"
-          items={menuItems}
-        />
+        <Link to="/movies">
+          <Title level={1} className="o-header__logo">
+            🎬 Movies
+          </Title>
+        </Link>
+        <Menu mode="horizontal" selectedKeys={[selectedKey]} items={menuItems} />
       </div>
     </AntHeader>
   );
