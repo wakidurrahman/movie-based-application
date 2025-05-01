@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from '../api/axiosInstance';
 import { config, endpoints } from '../config/app.config';
 import {
