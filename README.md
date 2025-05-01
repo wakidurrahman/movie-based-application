@@ -82,8 +82,14 @@ npm run test:coverage
 # Format code
 npm run format
 
+# Check formatting
+npm run format:check
+
 # Lint code
 npm run lint
+
+# Run all CI checks locally
+npm run ci
 ```
 
 ## Environment Configuration
@@ -268,6 +274,32 @@ The project uses BEM (Block, Element, Modifier) methodology for CSS with SCSS:
 - Code coverage
 
 ![Dev output](./docs/images/coverage.png)
+
+## Continuous Integration Setup
+
+This project uses GitHub Actions for continuous integration. The CI workflow automatically runs on pushes to the main branch and pull requests targeting the main branch.
+
+### CI Workflow
+
+The CI workflow performs the following checks:
+
+1. **Linting**: Ensures code follows the project's ESLint rules
+2. **Formatting**: Verifies code is formatted according to Prettier rules
+3. **Testing**: Runs all tests to ensure functionality
+4. **Building**: Verifies the project builds successfully
+
+## Workflow Configuration
+
+The workflow is configured in `.github/workflows/ci.yml` and uses Node.js version 22.14.0, which is the required version for this project.
+
+## Running Locally
+
+You can run the same checks locally using the CI script:
+
+```bash
+# Run all CI checks
+npm run ci
+```
 
 ## License
 

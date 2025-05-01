@@ -34,7 +34,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "format": "prettier --write \"src/**/*.{ts,tsx,scss}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
+    "ci": "bash ./scripts/check-ci.sh"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.7.0",
