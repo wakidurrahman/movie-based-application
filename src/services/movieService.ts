@@ -15,8 +15,8 @@ import {
 class ApiRequestManager {
   private cache = new Map<string, MovieResponse>();
   private pendingRequests = new Map<string, Promise<MovieResponse>>();
-  private dummyDataPromise: Promise<Movie[]> | null = null;
-  private dummySearchCache = new Map<string, MovieResponse>();
+  private sampleDataPromise: Promise<Movie[]> | null = null;
+  private sampleSearchCache = new Map<string, MovieResponse>();
 
   // Get cached or in-flight data
   async get(url: string): Promise<MovieResponse> {
@@ -51,17 +51,17 @@ class ApiRequestManager {
   }
 
   // Search in development mode with caching
-  async searchDummyData(searchTerm: string): Promise<MovieResponse> {
+  async searchSampleData(searchTerm: string): Promise<MovieResponse> {
     // Normalize the search term for caching
     const normalizedTerm = searchTerm.trim().toLowerCase();
 
     // Use cached search results if available
-    if (this.dummySearchCache.has(normalizedTerm)) {
-      return this.dummySearchCache.get(normalizedTerm)!;
+    if (this.sampleSearchCache.has(normalizedTerm)) {
+      return this.sampleSearchCache.get(normalizedTerm)!;
     }
 
-    // Get all movies from dummy data
-    const allMovies = await this.getDummyData();
+    // Get all movies from sample data
+    const allMovies = await this.getSampleData();
 
     // Create an artificial delay to simulate network request
     const result = new Promise<MovieResponse>(resolve => {
@@ -109,7 +109,7 @@ class ApiRequestManager {
         }
 
         // Cache the search result
-        this.dummySearchCache.set(normalizedTerm, response);
+        this.sampleSearchCache.set(normalizedTerm, response);
         resolve(response);
       }, 300); // Simulate network delay
     });
@@ -117,19 +117,19 @@ class ApiRequestManager {
     return result;
   }
 
-  // Get dummy data with caching
-  async getDummyData(): Promise<Movie[]> {
-    if (this.dummyDataPromise) {
-      return this.dummyDataPromise;
+  // Get sample data with caching
+  async getSampleData(): Promise<Movie[]> {
+    if (this.sampleDataPromise) {
+      return this.sampleDataPromise;
     }
 
-    this.dummyDataPromise = import('../data/dummy.json').then(response => response.default);
-    return this.dummyDataPromise;
+    this.sampleDataPromise = import('../data/sample.json').then(response => response.default);
+    return this.sampleDataPromise;
   }
 
-  // Get a movie by ID from dummy data
-  async getMovieByIdFromDummy(id: string): Promise<MovieResponse> {
-    const allMovies = await this.getDummyData();
+  // Get a movie by ID from sample data
+  async getMovieByIdFromSample(id: string): Promise<MovieResponse> {
+    const allMovies = await this.getSampleData();
     const movie = allMovies.find((movie: Movie) => movie.imdbID === id);
 
     if (!movie) {
@@ -149,6 +149,14 @@ class ApiRequestManager {
       config: { headers: {} as any },
     };
   }
+
+  // Clear all caches
+  clearCache(): void {
+    this.cache.clear();
+    this.pendingRequests.clear();
+    this.sampleDataPromise = null;
+    this.sampleSearchCache.clear();
+  }
 }
 
 // Create a singleton instance
@@ -157,7 +165,7 @@ const apiManager = new ApiRequestManager();
 // Fetch movie by title
 export const fetchMovie = (title?: string): Promise<MovieResponse> => {
   if (config.isDevelopment) {
-    return apiManager.searchDummyData(title || '');
+    return apiManager.searchSampleData(title || '');
   }
 
   const t = title || config.api.defaultTitle;
@@ -168,7 +176,7 @@ export const fetchMovie = (title?: string): Promise<MovieResponse> => {
 // Fetch movies by search term
 export const searchMovies = (searchTerm: string): Promise<MovieResponse> => {
   if (config.isDevelopment) {
-    return apiManager.searchDummyData(searchTerm);
+    return apiManager.searchSampleData(searchTerm);
   }
 
   const url = `${endpoints.search(searchTerm)}&apikey=${config.api.apiKey}`;
@@ -178,7 +186,7 @@ export const searchMovies = (searchTerm: string): Promise<MovieResponse> => {
 // Fetch movie by ID
 export const fetchMovieById = (id: string): Promise<MovieResponse> => {
   if (config.isDevelopment) {
-    return apiManager.getMovieByIdFromDummy(id);
+    return apiManager.getMovieByIdFromSample(id);
   }
 
   const url = `${endpoints.byId(id)}&apikey=${config.api.apiKey}`;

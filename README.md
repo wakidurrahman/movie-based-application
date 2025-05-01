@@ -98,7 +98,7 @@ The application supports different environments through the `app.config.ts` file
 
 - **Development Mode:**
 
-  - Uses local dummy data from `src/data/dummy.json`
+  - Uses local sample data from `src/data/sample.json`
   - No API calls to external services
   - Simplified development workflow
 
@@ -168,7 +168,7 @@ src/
 ├─ config/
 │  └─ app.config.ts              # Environment configuration
 ├─ data/
-│  └─ dummy.json                 # Mock movie data for development
+│  └─ sample.json                 # Sample movie data for development
 ├─ pages/
 │  ├─ Home.tsx                   # Main movie listing page
 │  ├─ Favorites.tsx              # User's favorite movies
@@ -212,7 +212,7 @@ The project uses BEM (Block, Element, Modifier) methodology for CSS with SCSS:
 
 1. **Data Fetching:** The app fetches movie data from:
 
-   - Development mode: Local `dummy.json` file
+   - Development mode: Local `sample.json` file
    - Production mode: OMDB API via axios
 
 2. **Home Page:**
