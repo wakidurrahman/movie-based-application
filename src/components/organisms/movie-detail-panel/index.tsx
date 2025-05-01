@@ -1,5 +1,5 @@
 import FavoriteIcon from '@/components/atoms/favorite-icon';
-import { Movie } from '@/store/moviesSlice';
+import { Movie } from '@/types/types';
 import { ArrowLeftOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import {
   Avatar,

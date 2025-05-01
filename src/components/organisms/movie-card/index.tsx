@@ -1,5 +1,5 @@
 import FavoriteIcon from '@/components/atoms/favorite-icon';
-import { Movie } from '@/store/moviesSlice';
+import { Movie } from '@/types/types';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { Card, Space, Tag, Typography } from 'antd';
 import { Link } from 'react-router-dom';

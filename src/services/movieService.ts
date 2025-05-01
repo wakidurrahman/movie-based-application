@@ -1,31 +1,37 @@
 import axiosInstance from '../api/axiosInstance';
 import { config, endpoints } from '../config/app.config';
-import { Movie } from '../store/moviesSlice';
+import {
+  Movie,
+  MovieApiResponse,
+  MovieDetailResponse,
+  MovieResponse,
+  MovieSearchResponse,
+} from '../types/types';
 
 /**
  * API caching and request management
  */
 class ApiRequestManager {
-  private cache = new Map<string, any>();
-  private pendingRequests = new Map<string, Promise<any>>();
+  private cache = new Map<string, MovieResponse>();
+  private pendingRequests = new Map<string, Promise<MovieResponse>>();
   private dummyDataPromise: Promise<Movie[]> | null = null;
-  private dummySearchCache = new Map<string, any>();
+  private dummySearchCache = new Map<string, MovieResponse>();
 
   // Get cached or in-flight data
-  async get(url: string): Promise<any> {
+  async get(url: string): Promise<MovieResponse> {
     // Check cache first
     if (this.cache.has(url)) {
-      return this.cache.get(url);
+      return this.cache.get(url)!;
     }
 
     // Check for pending request
     if (this.pendingRequests.has(url)) {
-      return this.pendingRequests.get(url);
+      return this.pendingRequests.get(url)!;
     }
 
     // Make a new request
     const requestPromise = axiosInstance
-      .get(url)
+      .get<MovieApiResponse>(url)
       .then(response => {
         // Cache successful response
         this.cache.set(url, response);
@@ -44,31 +50,37 @@ class ApiRequestManager {
   }
 
   // Search in development mode with caching
-  async searchDummyData(searchTerm: string): Promise<any> {
+  async searchDummyData(searchTerm: string): Promise<MovieResponse> {
     // Normalize the search term for caching
     const normalizedTerm = searchTerm.trim().toLowerCase();
 
     // Use cached search results if available
     if (this.dummySearchCache.has(normalizedTerm)) {
-      return this.dummySearchCache.get(normalizedTerm);
+      return this.dummySearchCache.get(normalizedTerm)!;
     }
 
     // Get all movies from dummy data
     const allMovies = await this.getDummyData();
 
     // Create an artificial delay to simulate network request
-    const result = new Promise<any>(resolve => {
+    const result = new Promise<MovieResponse>(resolve => {
       setTimeout(() => {
-        let response;
+        let response: MovieResponse;
 
         // Empty search returns all movies
         if (!normalizedTerm) {
+          const searchResponse: MovieSearchResponse = {
+            Search: allMovies,
+            totalResults: allMovies.length.toString(),
+            Response: 'True',
+          };
+
           response = {
-            data: {
-              Search: allMovies,
-              totalResults: allMovies.length.toString(),
-              Response: 'True',
-            },
+            data: searchResponse,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: { headers: {} as any },
           };
         } else {
           // Filter movies matching the search term
@@ -79,13 +91,19 @@ class ApiRequestManager {
               movie.Director.toLowerCase().includes(normalizedTerm)
           );
 
+          const searchResponse: MovieSearchResponse = {
+            Search: movies,
+            totalResults: movies.length.toString(),
+            Response: movies.length > 0 ? 'True' : 'False',
+            Error: movies.length === 0 ? 'Movie not found!' : undefined,
+          };
+
           response = {
-            data: {
-              Search: movies,
-              totalResults: movies.length.toString(),
-              Response: movies.length > 0 ? 'True' : 'False',
-              Error: movies.length === 0 ? 'Movie not found!' : undefined,
-            },
+            data: searchResponse,
+            status: 200,
+            statusText: 'OK',
+            headers: {},
+            config: { headers: {} as any },
           };
         }
 
@@ -109,7 +127,7 @@ class ApiRequestManager {
   }
 
   // Get a movie by ID from dummy data
-  async getMovieByIdFromDummy(id: string): Promise<any> {
+  async getMovieByIdFromDummy(id: string): Promise<MovieResponse> {
     const allMovies = await this.getDummyData();
     const movie = allMovies.find((movie: Movie) => movie.imdbID === id);
 
@@ -117,17 +135,18 @@ class ApiRequestManager {
       throw new Error('Movie not found');
     }
 
-    return {
-      data: { ...movie, Response: 'True' },
+    const detailResponse: MovieDetailResponse = {
+      ...movie,
+      Response: 'True',
     };
-  }
 
-  // Clear all caches
-  clearCache(): void {
-    this.cache.clear();
-    this.pendingRequests.clear();
-    this.dummyDataPromise = null;
-    this.dummySearchCache.clear();
+    return {
+      data: detailResponse,
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config: { headers: {} as any },
+    };
   }
 }
 
@@ -135,7 +154,7 @@ class ApiRequestManager {
 const apiManager = new ApiRequestManager();
 
 // Fetch movie by title
-export const fetchMovie = (title?: string) => {
+export const fetchMovie = (title?: string): Promise<MovieResponse> => {
   if (config.isDevelopment) {
     return apiManager.searchDummyData(title || '');
   }
@@ -146,7 +165,7 @@ export const fetchMovie = (title?: string) => {
 };
 
 // Fetch movies by search term
-export const searchMovies = (searchTerm: string) => {
+export const searchMovies = (searchTerm: string): Promise<MovieResponse> => {
   if (config.isDevelopment) {
     return apiManager.searchDummyData(searchTerm);
   }
@@ -156,7 +175,7 @@ export const searchMovies = (searchTerm: string) => {
 };
 
 // Fetch movie by ID
-export const fetchMovieById = (id: string) => {
+export const fetchMovieById = (id: string): Promise<MovieResponse> => {
   if (config.isDevelopment) {
     return apiManager.getMovieByIdFromDummy(id);
   }
@@ -165,14 +184,8 @@ export const fetchMovieById = (id: string) => {
   return apiManager.get(url);
 };
 
-// Clear cache - useful for testing or when data needs to be refreshed
-export const clearCache = () => {
-  apiManager.clearCache();
-};
-
 export default {
   fetchMovie,
   searchMovies,
   fetchMovieById,
-  clearCache,
 };

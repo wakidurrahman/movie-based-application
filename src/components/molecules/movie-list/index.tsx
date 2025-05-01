@@ -1,5 +1,5 @@
 import MovieCard from '@/components/organisms/movie-card';
-import { Movie } from '@/store/moviesSlice';
+import { Movie } from '@/types/types';
 import { Col, Row } from 'antd';
 import './index.scss';
 

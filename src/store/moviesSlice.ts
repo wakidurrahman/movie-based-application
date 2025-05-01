@@ -4,45 +4,8 @@ import {
   fetchMovieById as fetchMovieByIdService,
   searchMovies,
 } from '../services/movieService';
+import { Movie, MovieApiResponse, MovieDetailResponse, MoviesState } from '../types/types';
 import type { RootState } from './store';
-
-// Define a movie interface based on our data schema
-export interface Movie {
-  Title: string;
-  Year: string;
-  Rated: string;
-  Released: string;
-  Runtime: string;
-  Genre: string;
-  Director: string;
-  Writer: string;
-  Actors: string;
-  Plot: string;
-  Language: string;
-  Country: string;
-  Awards: string;
-  Poster: string;
-  Ratings: { Source: string; Value: string }[];
-  Metascore: string;
-  imdbRating: string;
-  imdbVotes: string;
-  imdbID: string;
-  Type: string;
-  DVD: string;
-  BoxOffice: string;
-  Production: string;
-  Website: string;
-  Response: string;
-}
-
-// Define the state type
-interface MoviesState {
-  list: Movie[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-  selectedMovie: Movie | null;
-  searchResults: Movie[];
-}
 
 // Initial state
 const initialState: MoviesState = {
@@ -51,6 +14,26 @@ const initialState: MoviesState = {
   error: null,
   selectedMovie: null,
   searchResults: [],
+};
+
+// Helper function to extract Movies from API response
+const extractMoviesFromResponse = (data: MovieApiResponse): Movie[] => {
+  // It's a search response with Search array
+  if ('Search' in data && Array.isArray(data.Search)) {
+    return data.Search;
+  }
+
+  // For backward compatibility with previous dev mode
+  if ('Movies' in data && Array.isArray(data.Movies)) {
+    return data.Movies;
+  }
+
+  // It's a detail response (single movie)
+  if ('Title' in data && data.Response === 'True') {
+    return [data];
+  }
+
+  return [];
 };
 
 // Thunk for fetching a default movie
@@ -64,24 +47,7 @@ export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { ge
 
   try {
     const response = await fetchMovie();
-    const data = response.data;
-
-    // Check if we got a Search array (either dev or prod mode)
-    if (data.Search && Array.isArray(data.Search)) {
-      return data.Search;
-    }
-
-    // Check for Movies array (backward compatibility with previous dev mode)
-    if (data.Movies && Array.isArray(data.Movies)) {
-      return data.Movies;
-    }
-
-    // Otherwise check if we got a single movie
-    if (data.Response === 'True' && data.Title) {
-      return [data];
-    }
-
-    return [];
+    return extractMoviesFromResponse(response.data);
   } catch (error) {
     console.error('Error fetching movies:', error);
     throw error;
@@ -94,17 +60,11 @@ export const searchMoviesByTerm = createAsyncThunk(
   async (searchTerm: string) => {
     // Skip empty searches
     if (!searchTerm.trim()) {
-      return [];
+      return [] as Movie[];
     }
 
     const response = await searchMovies(searchTerm);
-    const data = response.data;
-
-    if (data.Response === 'True') {
-      return data.Search || [];
-    }
-
-    return [];
+    return extractMoviesFromResponse(response.data);
   }
 );
 
@@ -115,21 +75,22 @@ export const fetchMovieById = createAsyncThunk(
     const state = getState() as RootState;
 
     // First, check if we already have the movie in our state
-    const existingMovie = state.movies.list.find((movie: Movie) => movie.imdbID === movieId);
+    const existingMovie = state.movies.list.find(movie => movie.imdbID === movieId);
     if (existingMovie) {
-      console.log('Using cached movie from state:', movieId);
       return existingMovie;
     }
 
     // If not found in state, fetch from API service
     const response = await fetchMovieByIdService(movieId);
-    const movie = response.data;
+    const data = response.data;
 
-    if (movie.Response !== 'True') {
+    // Ensure we're dealing with a movie detail response
+    if (!('Title' in data) || data.Response !== 'True') {
       throw new Error('Movie not found');
     }
 
-    return movie;
+    // Return the movie detail
+    return data as MovieDetailResponse;
   }
 );
 
@@ -145,7 +106,7 @@ const moviesSlice = createSlice({
       state.list.push(action.payload);
     },
     removeMovie: (state, action: PayloadAction<string>) => {
-      state.list = state.list.filter((movie: Movie) => movie.imdbID !== action.payload);
+      state.list = state.list.filter(movie => movie.imdbID !== action.payload);
     },
     setSelectedMovie: (state, action: PayloadAction<Movie | null>) => {
       state.selectedMovie = action.payload;
@@ -161,7 +122,7 @@ const moviesSlice = createSlice({
         state.status = 'succeeded';
 
         // Add any new movies to the list
-        action.payload.forEach((movie: Movie) => {
+        action.payload.forEach(movie => {
           if (!state.list.some(m => m.imdbID === movie.imdbID)) {
             state.list.push(movie);
           }
@@ -180,7 +141,7 @@ const moviesSlice = createSlice({
         state.searchResults = action.payload;
 
         // Add search results to the main list if they don't already exist
-        action.payload.forEach((movie: Movie) => {
+        action.payload.forEach(movie => {
           if (!state.list.some(m => m.imdbID === movie.imdbID)) {
             state.list.push(movie);
           }
@@ -198,7 +159,7 @@ const moviesSlice = createSlice({
         state.status = 'succeeded';
         state.selectedMovie = action.payload;
         // Add to list if not already there
-        if (!state.list.some((movie: Movie) => movie.imdbID === action.payload.imdbID)) {
+        if (!state.list.some(movie => movie.imdbID === action.payload.imdbID)) {
           state.list.push(action.payload);
         }
       })
@@ -219,6 +180,6 @@ export const selectMovieStatus = (state: RootState) => state.movies.status;
 export const selectMovieError = (state: RootState) => state.movies.error;
 export const selectSelectedMovie = (state: RootState) => state.movies.selectedMovie;
 export const selectMovieById = (state: RootState, movieId: string) =>
-  state.movies.list.find((movie: Movie) => movie.imdbID === movieId);
+  state.movies.list.find(movie => movie.imdbID === movieId);
 
 export default moviesSlice.reducer;
