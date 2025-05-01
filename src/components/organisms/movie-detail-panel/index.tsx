@@ -115,6 +115,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
                     value={movie.imdbRating || 'N/A'}
                     suffix="/10"
                     valueStyle={{ fontSize: '2rem' }}
+                    data-testid="imdb-rating"
                   />
                   <Text type="secondary">
                     {movie.imdbVotes && movie.imdbVotes !== 'N/A'

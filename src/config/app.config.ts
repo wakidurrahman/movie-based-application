@@ -1,15 +1,12 @@
 // Environment variables
 const isDevelopment = import.meta.env.MODE === 'development' || import.meta.env.DEV;
 
-// Log environment at initialization
-console.log(`⚙️ Running in ${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
-
 export const config = {
   api: {
     // Use development values for dev mode, production values for prod mode
-    baseUrl: isDevelopment ? 'http://localhost:5173/' : 'https://www.omdbapi.com',
-    defaultTitle: isDevelopment ? '' : 'Avatar+2',
-    apiKey: isDevelopment ? '' : 'bf05324b',
+    baseUrl: isDevelopment ? 'http://localhost:5173/' : 'https://www.omdbapi.com', // TODO: this only for demo purposes: better to define in env variables
+    defaultTitle: isDevelopment ? '' : 'Avatar+2', // TODO: this only for demo purposes: better to define in env variables
+    apiKey: isDevelopment ? '' : 'bf05324b', // TODO: this only for demo purposes: better to define in env variables
   },
   environment: import.meta.env.MODE || 'development',
   isProduction: import.meta.env.MODE === 'production',
@@ -24,6 +21,5 @@ export const endpoints = {
   byId: (id: string) => `/?i=${id}`,
   byTitle: (title: string) => `/?t=${encodeURIComponent(title.replace(/\s+/g, '+'))}`,
 };
-console.log('📝 Config:', config);
 
 export default config;

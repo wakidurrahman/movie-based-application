@@ -255,6 +255,20 @@ The project uses BEM (Block, Element, Modifier) methodology for CSS with SCSS:
   - React Testing Library for component tests
   - Mock implementations for external dependencies
 
+## Dev output
+
+- PC view
+
+![Dev output](./docs/images/pc-view.png)
+
+- Mobile view
+
+![Dev output](./docs/images/sp-view.png)
+
+- Code coverage
+
+![Dev output](./docs/images/coverage.png)
+
 ## License
 
 This project is licensed under the MIT License.
