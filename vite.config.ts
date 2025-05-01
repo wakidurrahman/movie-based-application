@@ -17,7 +17,10 @@ export default defineConfig({
     },
   },
   define: {
-    'process.env': process.env,
+    // Only expose specific environment variables that are needed
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    // Add other needed variables like this:
+    // 'process.env.API_URL': JSON.stringify(process.env.API_URL),
   },
   json: {
     stringify: true,

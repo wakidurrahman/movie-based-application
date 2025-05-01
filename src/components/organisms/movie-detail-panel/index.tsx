@@ -58,7 +58,7 @@ const MovieDetailPanel = ({ movie, isFavorite, onFavoriteToggle }: MovieDetailPa
               <Card
                 cover={
                   <Image
-                    alt={movie.Title || 'Movie poster'}
+                    alt={movie.Title}
                     src={imageSrc}
                     fallback="https://placehold.jp/300x450.png"
                   />
