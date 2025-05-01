@@ -3,7 +3,7 @@ import { config, endpoints } from '../config/app.config';
 import { Movie } from '../store/moviesSlice';
 
 /**
- * More robust API caching and request deduplication
+ * API caching and request management
  */
 class ApiRequestManager {
   private cache = new Map<string, any>();
@@ -11,45 +11,35 @@ class ApiRequestManager {
   private dummyDataPromise: Promise<Movie[]> | null = null;
   private dummySearchCache = new Map<string, any>();
 
-  // Generate a cache key for a request
-  private getCacheKey(url: string): string {
-    return url;
-  }
-
   // Get cached or in-flight data
   async get(url: string): Promise<any> {
-    const cacheKey = this.getCacheKey(url);
-
     // Check cache first
-    if (this.cache.has(cacheKey)) {
-      console.log(`[CACHE HIT] Using cached data for: ${url}`);
-      return this.cache.get(cacheKey);
+    if (this.cache.has(url)) {
+      return this.cache.get(url);
     }
 
     // Check for pending request
-    if (this.pendingRequests.has(cacheKey)) {
-      console.log(`[PENDING] Reusing in-flight request for: ${url}`);
-      return this.pendingRequests.get(cacheKey);
+    if (this.pendingRequests.has(url)) {
+      return this.pendingRequests.get(url);
     }
 
     // Make a new request
-    console.log(`[API REQUEST] Fetching: ${url}`);
     const requestPromise = axiosInstance
       .get(url)
       .then(response => {
         // Cache successful response
-        this.cache.set(cacheKey, response);
-        this.pendingRequests.delete(cacheKey);
+        this.cache.set(url, response);
+        this.pendingRequests.delete(url);
         return response;
       })
       .catch(error => {
         // Clean up on error
-        this.pendingRequests.delete(cacheKey);
+        this.pendingRequests.delete(url);
         throw error;
       });
 
     // Store the pending request
-    this.pendingRequests.set(cacheKey, requestPromise);
+    this.pendingRequests.set(url, requestPromise);
     return requestPromise;
   }
 
@@ -60,7 +50,6 @@ class ApiRequestManager {
 
     // Use cached search results if available
     if (this.dummySearchCache.has(normalizedTerm)) {
-      console.log(`[DEV CACHE HIT] Using cached search for: "${normalizedTerm}"`);
       return this.dummySearchCache.get(normalizedTerm);
     }
 
@@ -116,8 +105,21 @@ class ApiRequestManager {
     }
 
     this.dummyDataPromise = import('../data/dummy.json').then(response => response.default);
-
     return this.dummyDataPromise;
+  }
+
+  // Get a movie by ID from dummy data
+  async getMovieByIdFromDummy(id: string): Promise<any> {
+    const allMovies = await this.getDummyData();
+    const movie = allMovies.find((movie: Movie) => movie.imdbID === id);
+
+    if (!movie) {
+      throw new Error('Movie not found');
+    }
+
+    return {
+      data: { ...movie, Response: 'True' },
+    };
   }
 
   // Clear all caches
@@ -126,109 +128,19 @@ class ApiRequestManager {
     this.pendingRequests.clear();
     this.dummyDataPromise = null;
     this.dummySearchCache.clear();
-    console.log('[CACHE] Cleared all caches and pending requests');
   }
 }
 
 // Create a singleton instance
 const apiManager = new ApiRequestManager();
 
-/**
- * Get movies from dummy data
- */
-const getMoviesFromDummy = async (title?: string) => {
-  const allMovies = await apiManager.getDummyData();
-
-  // If no title is provided, return all movies in Search array format
-  if (!title) {
-    return {
-      data: {
-        Search: allMovies,
-        totalResults: allMovies.length.toString(),
-        Response: 'True',
-      },
-    };
-  }
-
-  // Find movie with title containing the search term (case insensitive)
-  const movie = allMovies.find((movie: Movie) =>
-    movie.Title.toLowerCase().includes(title.toLowerCase())
-  );
-
-  if (!movie) {
-    return { data: { Response: 'False', Error: 'Movie not found!' } };
-  }
-
-  // Return single movie in an array format to match Search structure
-  return {
-    data: {
-      Search: [movie],
-      totalResults: '1',
-      Response: 'True',
-    },
-  };
-};
-
-/**
- * Search movies by term from dummy data
- */
-const searchMoviesFromDummy = async (searchTerm: string) => {
-  const allMovies = await apiManager.getDummyData();
-
-  if (!searchTerm) {
-    // Return all movies if no search term
-    return {
-      data: {
-        Search: allMovies,
-        totalResults: allMovies.length.toString(),
-        Response: 'True',
-      },
-    };
-  }
-
-  // Filter movies with title containing the search term (case insensitive)
-  const movies = allMovies.filter((movie: Movie) =>
-    movie.Title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  if (movies.length === 0) {
-    return { data: { Response: 'False', Error: 'Movie not found!' } };
-  }
-
-  return {
-    data: {
-      Search: movies,
-      totalResults: movies.length.toString(),
-      Response: 'True',
-    },
-  };
-};
-
-/**
- * Get a movie by ID from dummy data
- */
-const getMovieByIdFromDummy = async (id: string) => {
-  const allMovies = await apiManager.getDummyData();
-  const movie = allMovies.find((movie: Movie) => movie.imdbID === id);
-
-  if (!movie) {
-    throw new Error('Movie not found');
-  }
-
-  return {
-    data: { ...movie, Response: 'True' },
-  };
-};
-
 // Fetch movie by title
 export const fetchMovie = (title?: string) => {
   if (config.isDevelopment) {
-    console.log('fetchMovie in dev mode', title);
-    return getMoviesFromDummy(title);
+    return apiManager.searchDummyData(title || '');
   }
 
   const t = title || config.api.defaultTitle;
-  console.log('fetchMovie in prod mode', t);
   const url = `${endpoints.byTitle(t)}&apikey=${config.api.apiKey}`;
   return apiManager.get(url);
 };
@@ -236,11 +148,9 @@ export const fetchMovie = (title?: string) => {
 // Fetch movies by search term
 export const searchMovies = (searchTerm: string) => {
   if (config.isDevelopment) {
-    console.log('searchMovies in dev mode:', searchTerm);
     return apiManager.searchDummyData(searchTerm);
   }
 
-  console.log('searchMovies in prod mode:', searchTerm);
   const url = `${endpoints.search(searchTerm)}&apikey=${config.api.apiKey}`;
   return apiManager.get(url);
 };
@@ -248,11 +158,9 @@ export const searchMovies = (searchTerm: string) => {
 // Fetch movie by ID
 export const fetchMovieById = (id: string) => {
   if (config.isDevelopment) {
-    console.log('fetchMovieById in dev mode', id);
-    return getMovieByIdFromDummy(id);
+    return apiManager.getMovieByIdFromDummy(id);
   }
 
-  console.log('fetchMovieById in prod mode', id);
   const url = `${endpoints.byId(id)}&apikey=${config.api.apiKey}`;
   return apiManager.get(url);
 };

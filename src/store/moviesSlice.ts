@@ -55,39 +55,32 @@ const initialState: MoviesState = {
 
 // Thunk for fetching a default movie
 export const fetchMovies = createAsyncThunk('movies/fetchMovies', async (_, { getState }) => {
+  const state = getState() as RootState;
+
+  // If we already have movies and are not in a failed state, use what we have
+  if (state.movies.list.length > 0 && state.movies.status !== 'failed') {
+    return state.movies.list;
+  }
+
   try {
-    const state = getState() as RootState;
-
-    // If we already have movies and are not in a failed state, use what we have
-    if (state.movies.list.length > 0 && state.movies.status !== 'failed') {
-      console.log('Using existing movies from state instead of fetching again');
-      return state.movies.list;
-    }
-
     const response = await fetchMovie();
     const data = response.data;
 
-    console.log('Fetch movies response:', data);
-
     // Check if we got a Search array (either dev or prod mode)
     if (data.Search && Array.isArray(data.Search)) {
-      console.log('Got movies from Search array:', data.Search.length);
       return data.Search;
     }
 
     // Check for Movies array (backward compatibility with previous dev mode)
     if (data.Movies && Array.isArray(data.Movies)) {
-      console.log('Got movies from Movies array:', data.Movies.length);
       return data.Movies;
     }
 
     // Otherwise check if we got a single movie
     if (data.Response === 'True' && data.Title) {
-      console.log('Got a single movie:', data.Title);
       return [data];
     }
 
-    console.log('No movies found in response');
     return [];
   } catch (error) {
     console.error('Error fetching movies:', error);

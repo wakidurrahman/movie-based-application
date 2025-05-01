@@ -1,8 +1,8 @@
+import FavoriteIcon from '@/components/atoms/favorite-icon';
+import { Movie } from '@/store/moviesSlice';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { Card, Space, Tag, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { Movie } from '../../../store/moviesSlice';
-import FavoriteIcon from '../../atoms/favorite-icon';
 import './index.scss';
 
 const { Meta } = Card;
@@ -53,7 +53,7 @@ const MovieCard = ({ movie, isFavorite, onFavoriteToggle }: MovieCardProps) => {
               <div className="o-movie-card__info-tags">
                 {genres.length > 0 ? (
                   <>
-                    {genres.map((genre, index) => (
+                    {genres.map((genre: string, index: number) => (
                       <Tag key={index} color="blue" style={{ marginBottom: 5 }}>
                         {genre}
                       </Tag>

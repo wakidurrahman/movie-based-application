@@ -1,3 +1,5 @@
+import FavoriteIcon from '@/components/atoms/favorite-icon';
+import { Movie } from '@/store/moviesSlice';
 import { ArrowLeftOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -15,8 +17,6 @@ import {
   Typography,
 } from 'antd';
 import { Link } from 'react-router-dom';
-import { Movie } from '../../../store/moviesSlice';
-import FavoriteIcon from '../../atoms/favorite-icon';
 import './index.scss';
 
 const { Title, Text, Paragraph } = Typography;

@@ -1,6 +1,6 @@
+import type { RootState } from '@/store/store';
+import { addFavorite, getFavorites, removeFavorite } from '@/utils/storage';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addFavorite, getFavorites, removeFavorite } from '../utils/storage';
-import type { RootState } from './store';
 
 interface FavoritesState {
   ids: string[];

@@ -1,6 +1,6 @@
+import MovieCard from '@/components/organisms/movie-card';
+import { Movie } from '@/store/moviesSlice';
 import { Col, Row } from 'antd';
-import { Movie } from '../../../store/moviesSlice';
-import MovieCard from '../../organisms/movie-card';
 import './index.scss';
 
 interface MovieListProps {

@@ -1,8 +1,9 @@
+import Footer from '@/components/organisms/footer/';
+import Header from '@/components/organisms/header/';
 import { Layout } from 'antd';
 import { ReactNode } from 'react';
-import Footer from '../../organisms/footer/';
-import Header from '../../organisms/header/';
 import './index.scss';
+
 const { Content } = Layout;
 
 interface BaseTemplateProps {

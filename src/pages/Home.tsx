@@ -1,11 +1,13 @@
+import LoadingSpinner from '@/components/atoms/loading-spinner';
+import SearchBar from '@/components/atoms/search-bar';
+import MovieList from '@/components/molecules/movie-list';
+import Base from '@/components/template/base/';
+import { selectFavoriteIds, toggleFavorite } from '@/store/favoritesSlice';
+import { AppDispatch } from '@/store/store';
+import { useSearch } from '@/utils/search';
 import { Empty, Flex, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadingSpinner from '../components/atoms/loading-spinner';
-import SearchBar from '../components/atoms/search-bar';
-import MovieList from '../components/molecules/movie-list';
-import Base from '../components/template/base/';
-import { selectFavoriteIds, toggleFavorite } from '../store/favoritesSlice';
 import {
   fetchMovies,
   searchMoviesByTerm,
@@ -13,8 +15,6 @@ import {
   selectMovieStatus,
   selectSearchResults,
 } from '../store/moviesSlice';
-import { AppDispatch } from '../store/store';
-import { useSearch } from '../utils/search';
 
 const { Title } = Typography;
 
