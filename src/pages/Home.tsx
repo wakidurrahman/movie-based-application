@@ -49,7 +49,7 @@ const Home = () => {
   const status = useSelector(selectMovieStatus);
 
   // Set up search with the utility hook
-  const { searchTerm, isSearchActive, debouncedSearch } = useSearch('', term =>
+  const { isSearchActive, debouncedSearch } = useSearch('', term =>
     dispatch(searchMoviesByTerm(term))
   );
 

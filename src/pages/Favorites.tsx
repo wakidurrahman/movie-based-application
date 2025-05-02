@@ -53,7 +53,7 @@ const Favorites = () => {
   }, [favoriteMovies]);
 
   // Set up search with the utility hook
-  const { searchTerm, debouncedSearch } = useSearch('', term => {
+  const { debouncedSearch } = useSearch('', term => {
     if (!term.trim()) {
       setSearchedMovies(favoriteMovies);
       return;
