@@ -1,17 +1,39 @@
+/**
+ * Favorites Component
+ *
+ * This component displays a user's favorite movies, allowing them to browse,
+ * search through, and manage their collection of favorite films.
+ *
+ * Features:
+ * - Displays a list of movies that the user has marked as favorites
+ * - Provides search functionality to filter favorite movies
+ * - Shows appropriate empty states when no favorites exist or search yields no results
+ * - Allows users to remove movies from their favorites list
+ *
+ * Redux Integration:
+ * - Retrieves favorite movie IDs from the favorites slice
+ * - Fetches movie data from the movies slice
+ * - Dispatches actions to toggle favorite status
+ */
+
+import SearchBar from '@/components/atoms/search-bar';
+import MovieList from '@/components/molecules/movie-list';
+import Base from '@/components/template/base/';
+import { selectFavoriteIds, toggleFavorite } from '@/store/favoritesSlice';
+import { selectAllMovies } from '@/store/moviesSlice';
+import { AppDispatch } from '@/store/store';
 import { Movie } from '@/types/types';
+import { useSearch } from '@/utils/search';
 import { Empty, Flex, Typography } from 'antd';
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import SearchBar from '../components/atoms/search-bar';
-import MovieList from '../components/molecules/movie-list';
-import Base from '../components/template/base/';
-import { selectFavoriteIds, toggleFavorite } from '../store/favoritesSlice';
-import { selectAllMovies } from '../store/moviesSlice';
-import { AppDispatch } from '../store/store';
-import { useSearch } from '../utils/search';
 
 const { Title } = Typography;
 
+/**
+ * Favorites component for displaying and managing user's favorite movies
+ * @returns JSX.Element - The rendered component
+ */
 const Favorites = () => {
   const dispatch = useDispatch<AppDispatch>();
   const allMovies = useSelector(selectAllMovies);
@@ -43,7 +65,10 @@ const Favorites = () => {
     setSearchedMovies(filtered);
   });
 
-  // Handle favorite toggle
+  /**
+   * Handles toggling the favorite status of a movie
+   * @param movieId - IMDB ID of the movie to toggle
+   */
   const handleFavoriteToggle = (movieId: string) => {
     dispatch(toggleFavorite(movieId));
   };
@@ -56,10 +81,7 @@ const Favorites = () => {
         <SearchBar onSearch={debouncedSearch} placeholder="Search in your favorites..." />
 
         {searchedMovies.length === 0 && favoriteMovies.length > 0 && (
-          <Empty
-            className="m-movie-list__empty"
-            description={`No results found for "${searchTerm}"`}
-          />
+          <Empty className="m-movie-list__empty" description="No results found!" />
         )}
 
         {favoriteMovies.length === 0 ? (

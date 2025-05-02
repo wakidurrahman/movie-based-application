@@ -101,11 +101,40 @@ The application supports different environments through the `app.config.ts` file
   - Uses local sample data from `src/data/sample.json`
   - No API calls to external services
   - Simplified development workflow
+  - No rate limiting concerns
+  - Local caching through Redux store only
 
 - **Production Mode:**
   - Connects to OMDB API
   - Uses API key for authentication
   - Implements proper error handling
+  - Implements API rate limiting strategy
+  - Enhanced caching strategy with localStorage persistence
+
+### Environment Variables
+
+The application requires the following environment variables:
+
+```
+# OMDB API Key (required for production)
+VITE_OMDB_API_KEY=your_api_key_here
+
+# API Base URL
+VITE_API_BASE_URL=https://www.omdbapi.com
+
+# Environment mode (development | production)
+MODE=development
+```
+
+A sample `.env.example` file is included in the repository. Copy this file to `.env.local` and add your API key to get started:
+
+```bash
+# Copy the example environment file
+cp .env.example .env.local
+
+# Edit the file to add your API key
+nano .env.local
+```
 
 The environment is automatically detected based on the `MODE` environment variable, and can be explicitly set when running scripts:
 
@@ -122,7 +151,7 @@ npm run preview
 
 ## Project Structure
 
-The project follows an atomic design pattern with a component-focused folder structure:
+The project follows an atomic `design pattern` with a component-focused folder structure:
 
 ```bash
 src/
@@ -245,6 +274,116 @@ The project uses BEM (Block, Element, Modifier) methodology for CSS with SCSS:
 - **Persistence:** Favorites synced with localStorage through utility functions
 - **API Communication:** Axios instance with interceptors for authentication and error handling
 - **Caching:** API responses are cached to prevent duplicate requests
+  - In-memory caching for session
+  - LocalStorage persistence for longer-term caching
+  - TTL (Time-to-Live) based invalidation
+  - Manual cache clearing on specific actions
+
+## Testing Strategy
+
+The project employs a comprehensive testing approach:
+
+### Unit Testing
+
+- Individual component testing with React Testing Library
+- Redux slice and action creators testing
+- Utility function testing
+- Target coverage: 80% minimum for critical paths
+
+### Mock Strategy
+
+- API responses mocked using MSW (Mock Service Worker)
+- LocalStorage mocked with a custom implementation
+- Redux store mocked for isolated component testing
+- Time-based functions (setTimeout, etc.) mocked for deterministic testing
+
+### Test Coverage Thresholds
+
+This my target coverage thresholds.
+
+```json
+{
+  "statements": 80,
+  "branches": 70,
+  "functions": 80,
+  "lines": 80
+}
+```
+
+Current test coverage is maintained above these thresholds and visually represented in the coverage report.
+
+## Performance Optimization
+
+The application implements several performance optimization strategies:
+
+### Code Splitting
+
+- Route-based code splitting with React.lazy and Suspense(for small project id could not apply for now)
+- Component-level dynamic imports for heavy components
+- Vendor chunk splitting in Vite configuration
+- Cache-busting: Including content hashes in filenames so updates invalidate old cache
+
+### Rendering Optimization
+
+- React.memo for pure functional components
+- useMemo and useCallback hooks for expensive calculations
+- Debounced search input to prevent excessive re-renders
+
+### Network Optimization
+
+- API response caching
+- Conditional fetching based on data freshness
+- Compressed assets via Vite build optimization
+
+### Metrics
+
+Performance is measured using Lighthouse scores targeting:
+
+- First Contentful Paint: < 1.8s
+- Largest Contentful Paint: < 2.5s
+- Time to Interactive: < 3.5s
+- Total Blocking Time: < 200ms
+- Cumulative Layout Shift: < 0.1
+
+## Accessibility (A11y)
+
+The application is built with accessibility in mind:
+
+- WCAG 2.1 AA compliance target
+- Semantic HTML structure throughout
+- Proper heading hierarchy
+- ARIA attributes where necessary
+- Keyboard navigation support
+- Focus management for modals and dialogs
+- Screen reader friendly content
+- Sufficient color contrast (minimum 4.5:1 ratio)
+- Support for reduced motion preferences
+- Text resizing without breaking layouts
+
+## Browser Compatibility
+
+The application is tested and supported on the following browsers:
+
+- Chrome (latest 2 versions)
+- Firefox (latest 2 versions)
+- Safari (latest 2 versions)
+- Edge (latest 2 versions)
+- iOS Safari (latest 2 versions)
+- Android Chrome (latest 2 versions)
+
+Polyfills are automatically included for older browsers via Vite's default configuration with `@vitejs/plugin-react`.
+
+## Security Considerations
+
+The application implements security best practices:
+
+- API key stored in environment variables, never in client code
+- Content Security Policy (CSP) headers
+- HTTPS enforcement
+- Input sanitization for search queries
+- No sensitive data stored in localStorage
+- Regular dependency updates to patch vulnerabilities
+- Security headers configured in deployment
 
 ## Development Tools
 
@@ -256,10 +395,56 @@ The project uses BEM (Block, Element, Modifier) methodology for CSS with SCSS:
   - ESLint with TypeScript and React plugins
   - Prettier for consistent formatting
   - TypeScript for type safety
+  - StyleLint for SCSS linting with BEM validation
 - **Testing:**
   - Vitest configuration
   - React Testing Library for component tests
   - Mock implementations for external dependencies
+  - Coverage reporting
+
+## DevOps & Deployment
+
+### CI/CD Pipeline
+
+The project uses GitHub Actions for CI/CD:
+
+#### CI Workflow Detail
+
+The CI pipeline, defined in `.github/workflows/ci.yml`, runs the following checks:
+
+```yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: [22.x]
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint code
+        run: npm run lint
+      - name: Check formatting
+        run: npm run format:check
+      - name: Run tests with coverage
+        run: npm run test:coverage
+      - name: Build
+        run: npm run build
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+```
 
 ## Dev output
 
@@ -304,3 +489,10 @@ npm run ci
 ## License
 
 This project is licensed under the MIT License.
+
+---
+
+## Version History
+
+- v1.0.0 - Initial release
+- v1.1.0 - Added favorites functionality

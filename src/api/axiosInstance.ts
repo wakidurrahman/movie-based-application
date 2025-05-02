@@ -1,7 +1,7 @@
+import { config } from '@/config/app.config';
+import { getToken } from '@/utils/storage';
 import { message } from 'antd';
 import axios from 'axios';
-import { config } from '../config/app.config';
-import { getToken } from '../utils/storage';
 
 /**
  * Creates an Axios instance with predefined configuration.

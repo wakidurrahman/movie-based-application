@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   fetchMovie,
   fetchMovieById as fetchMovieByIdService,
   searchMovies,
-} from '../services/movieService';
-import { Movie, MovieApiResponse, MovieDetailResponse, MoviesState } from '../types/types';
-import type { RootState } from './store';
+} from '@/services/movieService';
+import type { RootState } from '@/store/store';
+import { Movie, MovieApiResponse, MovieDetailResponse, MoviesState } from '@/types/types';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Initial state
 const initialState: MoviesState = {

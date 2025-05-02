@@ -1,23 +1,46 @@
+/**
+ * Home Component
+ *
+ * This component serves as the main landing page of the application, displaying
+ * a list of movies that users can browse and search through.
+ *
+ * Features:
+ * - Displays a list of movies fetched from the API
+ * - Provides search functionality to filter movies
+ * - Shows loading states during data fetching
+ * - Handles empty states and search with no results
+ * - Allows users to toggle favorite status for movies
+ *
+ * Redux Integration:
+ * - Fetches and displays movies from the movies slice
+ * - Integrates with favorites functionality
+ * - Dispatches actions to fetch movies, search, and toggle favorites
+ */
+
 import LoadingSpinner from '@/components/atoms/loading-spinner';
 import SearchBar from '@/components/atoms/search-bar';
 import MovieList from '@/components/molecules/movie-list';
 import Base from '@/components/template/base/';
 import { selectFavoriteIds, toggleFavorite } from '@/store/favoritesSlice';
-import { AppDispatch } from '@/store/store';
-import { useSearch } from '@/utils/search';
-import { Empty, Flex, Typography } from 'antd';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchMovies,
   searchMoviesByTerm,
   selectAllMovies,
   selectMovieStatus,
   selectSearchResults,
-} from '../store/moviesSlice';
+} from '@/store/moviesSlice';
+import { AppDispatch } from '@/store/store';
+import { useSearch } from '@/utils/search';
+import { Empty, Flex, Typography } from 'antd';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const { Title } = Typography;
 
+/**
+ * Home component for displaying the main movie browsing interface
+ * @returns JSX.Element - The rendered component
+ */
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
   const movies = useSelector(selectAllMovies);
@@ -37,7 +60,10 @@ const Home = () => {
     }
   }, [dispatch, status, movies.length]);
 
-  // Handle favorite toggle
+  /**
+   * Handles toggling the favorite status of a movie
+   * @param movieId - IMDB ID of the movie to toggle
+   */
   const handleFavoriteToggle = (movieId: string) => {
     dispatch(toggleFavorite(movieId));
   };
@@ -59,12 +85,7 @@ const Home = () => {
 
         {isLoading && <LoadingSpinner />}
 
-        {showNoResults && (
-          <Empty
-            className="m-movie-list__empty"
-            description={`No results found for "${searchTerm}"`}
-          />
-        )}
+        {showNoResults && <Empty className="m-movie-list__empty" description="No results found!" />}
 
         {showEmptyState && <Empty className="m-movie-list__empty" description="No movies found" />}
 
