@@ -292,7 +292,7 @@ The project employs a comprehensive testing approach:
 
 ### Mock Strategy
 
-- API responses mocked using MSW (Mock Service Worker)
+- For development mode, I mocked the API responses using `sample.json` file
 - LocalStorage mocked with a custom implementation
 - Redux store mocked for isolated component testing
 - Time-based functions (setTimeout, etc.) mocked for deterministic testing
@@ -310,7 +310,7 @@ This my target coverage thresholds.
 }
 ```
 
-Current test coverage is maintained above these thresholds and visually represented in the coverage report.
+Current test coverage is not maintained above these thresholds and visually represented in the coverage report.
 
 ## Performance Optimization
 
@@ -349,16 +349,13 @@ Performance is measured using Lighthouse scores targeting:
 
 The application is built with accessibility in mind:
 
-- WCAG 2.1 AA compliance target
 - Semantic HTML structure throughout
 - Proper heading hierarchy
 - ARIA attributes where necessary
 - Keyboard navigation support
 - Focus management for modals and dialogs
 - Screen reader friendly content
-- Sufficient color contrast (minimum 4.5:1 ratio)
 - Support for reduced motion preferences
-- Text resizing without breaking layouts
 
 ## Browser Compatibility
 
