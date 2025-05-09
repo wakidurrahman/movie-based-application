@@ -1,0 +1,27 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_VERSION = "10.8.2"
+
+# Production context: all deploys from the Production branch 
+# set in your Netlify dashboard will inherit these settings
+[context.production]
+  command = "npm run build"
+  
+# Deploy Preview context: all deploys generated from a pull/merge request
+[context.deploy-preview]
+  command = "npm run build"
+
+# Branch deploy context: all deploys that are not from a pull/merge request 
+# or from the Production branch will inherit these settings
+[context.branch-deploy]
+  command = "npm run build"
+
+# Redirects and headers
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
