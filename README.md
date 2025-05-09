@@ -401,6 +401,87 @@ The application implements security best practices:
 
 ## DevOps & Deployment
 
+### Live Demo
+
+The application is deployed and available at: [movie-based-application.netlify.app](https://movie-based-application.netlify.app)
+
+### Netlify Deployment Configuration
+
+The application is configured for deployment to Netlify with the following setup:
+
+#### 1. netlify.toml Configuration
+
+The `netlify.toml` file at the root of the project specifies the build settings:
+
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NPM_VERSION = "10.8.2"
+
+# Production context settings
+[context.production]
+  command = "npm run build"
+
+# SPA redirect rule - handles client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+This configuration specifies:
+
+- The build command (`npm run build`)
+- The publish directory (`dist`)
+- Required Node.js and npm versions
+- SPA redirect rules for client-side routing
+
+#### 2. Automated Deployment with GitHub Actions
+
+The repository includes a GitHub Actions workflow (`.github/workflows/netlify-deploy.yml`) that automatically deploys the application to Netlify when changes are pushed to the main branch:
+
+```yml
+name: Deploy to Netlify
+
+on:
+  push:
+    branches: [main, master]
+  workflow_run:
+    workflows: ['CI']
+    branches: [main, master]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+
+    steps:
+      # Build and deploy steps...
+      # Uses the NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID secrets
+```
+
+#### 3. Required Environment Variables
+
+For the deployment to work, the following environment variables are set in the Netlify dashboard:
+
+- `VITE_OMDB_API_KEY`: API key for OMDB API
+- `MODE`: Set to `production` for production builds
+
+#### 4. GitHub Repository Secrets
+
+The GitHub Actions workflow requires the following secrets to be set in the repository settings:
+
+- `NETLIFY_AUTH_TOKEN`: Personal access token from Netlify
+- `NETLIFY_SITE_ID`: ID of the Netlify site to deploy to
+
+The `GITHUB_TOKEN` is automatically provided by GitHub and doesn't need to be set manually.
+
 ### CI/CD Pipeline
 
 The project uses GitHub Actions for CI/CD:
